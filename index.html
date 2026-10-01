@@ -133,11 +133,10 @@
 <body>
 
     <div class="header">
-        <!-- Logo de la organización (Asegúrate de tener logo.png en el repositorio) -->
         <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
         <div class="header-text">
-            <h1> Planificador de Vacaciones Mantenimiento Operacional Campo Cariña (2026 - 2027)</h1>
-                               </div>
+            <h1>Planificador de Vacaciones Mantenimiento Operacional Campo Cariña (2026 - 2027)</h1>
+        </div>
     </div>
 
     <!-- Filtros de Búsqueda y Consulta -->
@@ -199,9 +198,9 @@
                     <th>Disciplina</th>
                     <th>Guardia</th>
                     <th>Año</th>
-                    <th>Días Hab.</th>
+                    <th>Días Cont.</th>
                     <th>Fecha Inicio</th>
-                    <th>Feriados</th>
+                    <th>Feriados en Período</th>
                     <th>Fecha Fin</th>
                     <th>Reincorporación</th>
                 </tr>
@@ -211,14 +210,16 @@
     </div>
 
     <script>
+        // Lista de feriados nacionales según legislación venezolana
         const feriados = [
             // 2026
-            '2026-04-19', '2026-05-01', '2026-06-24', '2026-07-05', '2026-07-24',
-            '2026-10-12', '2026-12-24', '2026-12-25', '2026-12-31',
+            '2026-01-01', '2026-02-16', '2026-02-17', '2026-04-02', '2026-04-03', '2026-04-19', 
+            '2026-05-01', '2026-06-24', '2026-07-05', '2026-07-24', '2026-10-12', '2026-12-24', 
+            '2026-12-25', '2026-12-31',
             // 2027
-            '2027-01-01', '2027-02-08', '2027-02-09', '2027-03-25', '2027-03-26',
-            '2027-04-19', '2027-05-01', '2027-06-24', '2027-07-05', '2027-07-24',
-            '2027-10-12', '2027-12-24', '2027-12-25', '2027-12-31', '2028-01-01'
+            '2027-01-01', '2027-02-08', '2027-02-09', '2027-03-25', '2027-03-26', '2027-04-19', 
+            '2027-05-01', '2027-06-24', '2027-07-05', '2027-07-24', '2027-10-12', '2027-12-24', 
+            '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
         let rawData = [
@@ -275,36 +276,40 @@
 
         let chartInstance = null;
 
-        function addDays(dateStr, days, is5x2) {
+        function calculateVacations(dateStr, days, is5x2) {
             if (!dateStr) return { fin: '', reinc: '', feriadosCount: 0 };
-            let curr = new Date(dateStr + 'T00:00:00');
-            let added = 0;
+            
+            let start = new Date(dateStr + 'T00:00:00');
             let feriadosEncontrados = 0;
 
-            while (added < days) {
-                let dayOfWeek = curr.getDay(); // 0: Dom, 6: Sáb
-                let isoStr = curr.toISOString().split('T')[0];
+            // DÍAS CONTINUOS: El último día de vacaciones es fecha de inicio + (días - 1)
+            let end = new Date(start);
+            end.setDate(end.getDate() + (days - 1));
 
+            // Contar feriados nacionales dentro del período continuo de vacaciones
+            let curr = new Date(start);
+            while (curr <= end) {
+                let isoStr = curr.toISOString().split('T')[0];
                 if (feriados.includes(isoStr)) {
                     feriadosEncontrados++;
-                } else if (!is5x2 || (dayOfWeek !== 0 && dayOfWeek !== 6)) {
-                    added++;
                 }
-                if (added < days) {
-                    curr.setDate(curr.getDate() + 1);
-                }
+                curr.setDate(curr.getDate() + 1);
             }
 
-            let finStr = curr.toISOString().split('T')[0];
-
-            let reinc = new Date(curr);
+            // REINCORPORACIÓN: El primer día de trabajo posterior al descanso continuo.
+            // Si cae en fin de semana (para personal 5X2) o feriado nacional, se desplaza al siguiente día hábil.
+            let reinc = new Date(end);
             reinc.setDate(reinc.getDate() + 1);
-            while ((is5x2 && (reinc.getDay() === 0 || reinc.getDay() === 6)) || feriados.includes(reinc.toISOString().split('T')[0])) {
+
+            while (
+                (is5x2 && (reinc.getDay() === 0 || reinc.getDay() === 6)) || 
+                feriados.includes(reinc.toISOString().split('T')[0])
+            ) {
                 reinc.setDate(reinc.getDate() + 1);
             }
 
             return {
-                fin: finStr,
+                fin: end.toISOString().split('T')[0],
                 reinc: reinc.toISOString().split('T')[0],
                 feriadosCount: feriadosEncontrados
             };
@@ -313,7 +318,7 @@
         function calculateAllData() {
             return rawData.map((item, idx) => {
                 let is5x2 = item.guardia === '5X2';
-                let calc = addDays(item.inicio, item.dias, is5x2);
+                let calc = calculateVacations(item.inicio, item.dias, is5x2);
                 return {
                     ...item,
                     index: idx,
