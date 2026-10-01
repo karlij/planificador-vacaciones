@@ -15,8 +15,6 @@
             --card-bg: #ffffff;
             --text: #1e293b;
             --border: #e2e8f0;
-            --danger: #ef4444;
-            --success: #10b981;
         }
 
         body {
@@ -34,31 +32,32 @@
             border-radius: 8px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .header h1 { margin: 0 0 8px 0; font-size: 24px; }
-        .header p { margin: 0; opacity: 0.9; font-size: 14px; }
+        .header img {
+            height: 60px;
+            width: auto;
+            background-color: white;
+            padding: 5px;
+            border-radius: 6px;
+            object-fit: contain;
+        }
 
-        .add-form-container {
+        .header-text h1 { margin: 0 0 4px 0; font-size: 24px; }
+        .header-text p { margin: 0; opacity: 0.9; font-size: 14px; }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
             background: var(--card-bg);
-            padding: 15px 20px;
+            padding: 15px;
             border-radius: 8px;
             border: 1px solid var(--border);
             margin-bottom: 20px;
-        }
-
-        .add-form-container h3 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-size: 16px;
-            color: var(--primary);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            align-items: end;
         }
 
         .form-group {
@@ -79,44 +78,6 @@
             border-radius: 6px;
             font-size: 13px;
             outline: none;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-add {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .btn-add:hover { background-color: #059669; }
-
-        .btn-delete {
-            background-color: #fee2e2;
-            color: var(--danger);
-            padding: 4px 8px;
-            font-size: 12px;
-            border-radius: 4px;
-        }
-
-        .btn-delete:hover { background-color: #fca5a5; }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
         }
 
         .chart-container {
@@ -159,10 +120,6 @@
 
         tr:hover { background-color: #f8fafc; }
 
-        input[type="date"], input[type="number"] {
-            width: 120px;
-        }
-
         .tag {
             padding: 2px 8px;
             border-radius: 12px;
@@ -176,64 +133,15 @@
 <body>
 
     <div class="header">
-        <h1>📊 Planificador de Vacaciones (2026 - 2027)</h1>
-        <p>Ajuste dinámico de fechas según la LOTTT de Venezuela y feriados nacionales.</p>
+        <!-- Logo de la organización (Asegúrate de tener logo.png en el repositorio) -->
+        <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
+        <div class="header-text">
+            <h1>📊 Planificador de Vacaciones Campo Cariña (2026 - 2027)</h1>
+            <p>Ajuste dinámico de fechas según la LOTTT de Venezuela y feriados nacionales.</p>
+        </div>
     </div>
 
-    <!-- Formulario para Agregar Nuevo Trabajador -->
-    <div class="add-form-container">
-        <h3>➕ Incluir Nuevo Trabajador al Calendario</h3>
-        <form id="addWorkerForm" onsubmit="handleAddWorker(event)" class="form-grid">
-            <div class="form-group">
-                <label>Item</label>
-                <input type="number" id="newId" value="30" required>
-            </div>
-            <div class="form-group">
-                <label>Cédula</label>
-                <input type="text" id="newCedula" placeholder="V-12345678" required>
-            </div>
-            <div class="form-group">
-                <label>Apellidos y Nombres</label>
-                <input type="text" id="newNombre" placeholder="PÉREZ, JUAN" required>
-            </div>
-            <div class="form-group">
-                <label>Disciplina</label>
-                <select id="newDisciplina" required>
-                    <option value="ELECTRICIDAD">Electricidad</option>
-                    <option value="FACILIDADES">Facilidades</option>
-                    <option value="INSTRUMENTACIÓN">Instrumentación</option>
-                    <option value="MECANICA">Mecánica</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Guardia</label>
-                <select id="newGuardia" required>
-                    <option value="4X4">4X4</option>
-                    <option value="5X2">5X2</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Año</label>
-                <select id="newAno" required>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Días Hab.</label>
-                <input type="number" id="newDias" value="34" min="1" max="60" required>
-            </div>
-            <div class="form-group">
-                <label>Fecha Inicio</label>
-                <input type="date" id="newInicio" required>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-add">Agregar Registro</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Filtros de Búsqueda -->
+    <!-- Filtros de Búsqueda y Consulta -->
     <div class="controls">
         <div class="form-group">
             <label>Filtrar por Mes</label>
@@ -297,7 +205,6 @@
                     <th>Feriados</th>
                     <th>Fecha Fin</th>
                     <th>Reincorporación</th>
-                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -418,35 +325,6 @@
             });
         }
 
-        function handleAddWorker(event) {
-            event.preventDefault();
-            const newRecord = {
-                id: parseInt(document.getElementById('newId').value),
-                cedula: document.getElementById('newCedula').value.trim(),
-                nombre: document.getElementById('newNombre').value.trim().toUpperCase(),
-                disciplina: document.getElementById('newDisciplina').value,
-                guardia: document.getElementById('newGuardia').value,
-                ano: parseInt(document.getElementById('newAno').value),
-                dias: parseInt(document.getElementById('newDias').value),
-                inicio: document.getElementById('newInicio').value
-            };
-
-            rawData.push(newRecord);
-            renderAll();
-            
-            document.getElementById('newCedula').value = '';
-            document.getElementById('newNombre').value = '';
-            document.getElementById('newInicio').value = '';
-            document.getElementById('newId').value = parseInt(newRecord.id) + 1;
-        }
-
-        function deleteWorker(originalIdx) {
-            if (confirm("¿Seguro que deseas eliminar este registro de vacaciones?")) {
-                rawData.splice(originalIdx, 1);
-                renderAll();
-            }
-        }
-
         function renderAll() {
             const data = calculateAllData();
             const yearFilter = document.getElementById('filterYear').value;
@@ -485,16 +363,6 @@
             renderChart(filtered, yearFilter);
         }
 
-        function updateInicioDate(idx, newDate) {
-            rawData[idx].inicio = newDate;
-            renderAll();
-        }
-
-        function updateDias(idx, newDias) {
-            rawData[idx].dias = parseInt(newDias) || 0;
-            renderAll();
-        }
-
         function renderTable(list) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -508,12 +376,11 @@
                     <td>${item.disciplina}</td>
                     <td>${item.guardia}</td>
                     <td><span class="tag tag-${item.ano}">${item.ano}</span></td>
-                    <td><input type="number" value="${item.dias}" min="1" max="60" onchange="updateDias(${item.index}, this.value)"></td>
-                    <td><input type="date" value="${item.inicio}" onchange="updateInicioDate(${item.index}, this.value)"></td>
+                    <td>${item.dias}</td>
+                    <td>${item.inicio}</td>
                     <td>${item.feriadosCount} feriado(s)</td>
                     <td><strong>${item.fin}</strong></td>
                     <td><strong style="color: #15803d;">${item.reinc}</strong></td>
-                    <td><button class="btn btn-delete" onclick="deleteWorker(${item.index})">Eliminar</button></td>
                 `;
                 tbody.appendChild(tr);
             });
