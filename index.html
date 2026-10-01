@@ -47,7 +47,6 @@
         }
 
         .header-text h1 { margin: 0 0 4px 0; font-size: 24px; }
-        .header-text p { margin: 0; opacity: 0.9; font-size: 14px; }
 
         .controls {
             display: flex;
@@ -210,13 +209,10 @@
     </div>
 
     <script>
-        // Lista de feriados nacionales según legislación venezolana
         const feriados = [
-            // 2026
             '2026-01-01', '2026-02-16', '2026-02-17', '2026-04-02', '2026-04-03', '2026-04-19', 
             '2026-05-01', '2026-06-24', '2026-07-05', '2026-07-24', '2026-10-12', '2026-12-24', 
             '2026-12-25', '2026-12-31',
-            // 2027
             '2027-01-01', '2027-02-08', '2027-02-09', '2027-03-25', '2027-03-26', '2027-04-19', 
             '2027-05-01', '2027-06-24', '2027-07-05', '2027-07-24', '2027-10-12', '2027-12-24', 
             '2027-12-25', '2027-12-31', '2028-01-01'
@@ -282,11 +278,9 @@
             let start = new Date(dateStr + 'T00:00:00');
             let feriadosEncontrados = 0;
 
-            // DÍAS CONTINUOS: El último día de vacaciones es fecha de inicio + (días - 1)
             let end = new Date(start);
             end.setDate(end.getDate() + (days - 1));
 
-            // Contar feriados nacionales dentro del período continuo de vacaciones
             let curr = new Date(start);
             while (curr <= end) {
                 let isoStr = curr.toISOString().split('T')[0];
@@ -296,8 +290,6 @@
                 curr.setDate(curr.getDate() + 1);
             }
 
-            // REINCORPORACIÓN: El primer día de trabajo posterior al descanso continuo.
-            // Si cae en fin de semana (para personal 5X2) o feriado nacional, se desplaza al siguiente día hábil.
             let reinc = new Date(end);
             reinc.setDate(reinc.getDate() + 1);
 
@@ -341,7 +333,6 @@
                 if (discFilter !== 'ALL' && d.disciplina !== discFilter) return false;
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
-                // Filtro por Mes
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
                     let start = new Date(d.inicio + 'T00:00:00');
@@ -364,7 +355,7 @@
             });
 
             renderTable(filtered);
-            renderChart(filtered, yearFilter);
+            renderChart(filtered, yearFilter, monthFilter);
         }
 
         function renderTable(list) {
@@ -390,22 +381,41 @@
             });
         }
 
-        function renderChart(list, yearFilter) {
+        function renderChart(list, yearFilter, monthFilter) {
             const ctx = document.getElementById('ganttChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
+            // Ordenar datos ascendentemente por fecha de inicio para la gráfica
+            let sortedList = [...list].sort((a, b) => new Date(a.inicio) - new Date(b.inicio));
+
             let minX = '2026-01-01';
             let maxX = '2027-12-31';
+            let timeUnit = 'month';
+            let displayFormat = 'MMM yyyy';
 
-            if (yearFilter === '2026') {
-                minX = '2026-01-01';
-                maxX = '2026-12-31';
-            } else if (yearFilter === '2027') {
-                minX = '2027-01-01';
-                maxX = '2027-12-31';
+            // Ajuste dinámico de rangos en el eje X cuando se filtra por Mes / Año
+            if (monthFilter !== 'ALL') {
+                timeUnit = 'day';
+                displayFormat = 'dd MMM';
+                let year = yearFilter !== 'ALL' ? parseInt(yearFilter) : 2026;
+                let monthIdx = parseInt(monthFilter) - 1;
+
+                let firstDay = new Date(year, monthIdx, 1);
+                let lastDay = new Date(year, monthIdx + 1, 0);
+
+                minX = firstDay.toISOString().split('T')[0];
+                maxX = lastDay.toISOString().split('T')[0];
+            } else {
+                if (yearFilter === '2026') {
+                    minX = '2026-01-01';
+                    maxX = '2026-12-31';
+                } else if (yearFilter === '2027') {
+                    minX = '2027-01-01';
+                    maxX = '2027-12-31';
+                }
             }
 
-            const chartData = list.filter(d => d.inicio && d.fin).map(d => ({
+            const chartData = sortedList.filter(d => d.inicio && d.fin).map(d => ({
                 x: [d.inicio, d.fin],
                 y: `${d.nombre} (${d.ano})`,
                 ano: d.ano
@@ -432,12 +442,15 @@
                         x: {
                             type: 'time',
                             time: {
-                                unit: 'month',
-                                displayFormats: { month: 'MMM yyyy' }
+                                unit: timeUnit,
+                                displayFormats: { 
+                                    day: displayFormat,
+                                    month: displayFormat 
+                                }
                             },
                             min: minX,
                             max: maxX,
-                            title: { display: true, text: 'Línea del Tiempo (2026 - 2027)' }
+                            title: { display: true, text: monthFilter !== 'ALL' ? 'Días del Mes' : 'Línea del Tiempo' }
                         },
                         y: {
                             ticks: { font: { size: 10 } }
@@ -461,4 +474,5 @@
         window.onload = renderAll;
     </script>
 </body>
+</html>
 </html>
