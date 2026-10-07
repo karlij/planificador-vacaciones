@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Vacaciones de Personal</title>
+    <title>Control y Monitoreo de Vacaciones</title>
     <style>
         :root {
             --primary-color: #003366;
@@ -66,7 +66,7 @@
             font-size: 0.9rem;
         }
 
-        input[type="text"], input[type="file"], select {
+        input[type="text"], select {
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -149,13 +149,15 @@
 
     <section class="controls">
         <div class="form-group">
-            <label for="fileInput">Cargar Archivo TXT Manual</label>
-            <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(event)">
+            <label for="searchInput">Buscar Trabajador / Ficha</label>
+            <input type="text" id="searchInput" placeholder="Escriba para filtrar..." oninput="filterData()">
         </div>
 
         <div class="form-group">
-            <label for="searchInput">Buscar Trabajador / Ficha</label>
-            <input type="text" id="searchInput" placeholder="Escriba para filtrar..." oninput="filterData()">
+            <label for="unitFilter">Unidad / Departamento</label>
+            <select id="unitFilter" onchange="filterData()">
+                <option value="ALL">Todas las Unidades</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -189,7 +191,8 @@
                 <tr>
                     <th>Ficha</th>
                     <th>Nombre y Apellido</th>
-                    <th>Cargo</th>
+                    <th>Unidad</th>
+                    <th>Empresa</th>
                     <th>Días Pendientes</th>
                     <th>Último Periodo</th>
                     <th>Estado</th>
@@ -197,7 +200,7 @@
             </thead>
             <tbody id="dataTableBody">
                 <tr>
-                    <td colspan="6" style="text-align: center;">Cargando datos...</td>
+                    <td colspan="7" style="text-align: center;">Cargando datos...</td>
                 </tr>
             </tbody>
         </table>
@@ -213,8 +216,6 @@
     });
 
     async function loadTxtData() {
-        let loaded = false;
-        // Se coloca 'vacaciones_personal.txt' en primer orden coincidiendo exactamente con la carpeta local
         const urlsToTry = ['vacaciones_personal.txt', 'Vacaciones%20personal.txt', 'Vacaciones personal.txt'];
         
         for (let url of urlsToTry) {
@@ -224,75 +225,97 @@
                     const text = await response.text();
                     if (text.trim().length > 0) {
                         parseTxtData(text);
-                        loaded = true;
-                        break;
+                        return;
                     }
                 }
             } catch (e) {
-                console.warn("No se pudo cargar de forma automática desde URL:", url);
+                console.warn("No se pudo cargar automáticamente:", url);
             }
         }
 
-        if (!loaded) {
-            console.warn("Políticas de seguridad del navegador impiden fetch() en file:///. Use la carga manual si es necesario.");
-            document.getElementById('dataTableBody').innerHTML = 
-                '<tr><td colspan="6" style="text-align: center; color: #666;">Seleccione el archivo TXT mediante el botón superior para visualizar la información.</td></tr>';
-        }
-    }
-
-    function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const text = e.target.result;
-            parseTxtData(text);
-        };
-        reader.readAsText(file);
+        document.getElementById('dataTableBody').innerHTML = 
+            '<tr><td colspan="7" style="text-align: center; color: red;">No se pudo cargar vacaciones_personal.txt. Asegúrese de ejecutarlo desde un servidor local (Live Server).</td></tr>';
     }
 
     function parseTxtData(text) {
         const lines = text.split('\n');
         rawData = [];
 
-        lines.forEach((line, index) => {
+        lines.forEach((line) => {
             const trimmed = line.trim();
-            if (!trimmed || index === 0 && (trimmed.toLowerCase().includes('ficha') || trimmed.toLowerCase().includes('nombre'))) {
-                return; // Omitir cabeceras o líneas vacías
+            if (!trimmed) return;
+
+            // Divide las columnas separadas por tabulador (\t) o comas/puntos y comas
+            let cols = trimmed.split('\t');
+            if (cols.length < 2) {
+                cols = trimmed.split(/[,;]+/);
             }
 
-            // Separación por tabulación, coma o punto y coma
-            const columns = trimmed.split(/[\t;,]+/);
+            // Omitir la fila del encabezado si existe en el TXT
+            if (cols[0].toLowerCase().includes('ficha') || cols[1]?.toLowerCase().includes('nombre')) {
+                return;
+            }
 
-            if (columns.length >= 3) {
+            // Mapeo adaptado al orden del archivo TXT original
+            if (cols.length >= 3) {
+                const ficha = cols[0] ? cols[0].trim() : 'N/A';
+                const nombre = cols[1] ? cols[1].trim() : 'N/A';
+                const unidad = cols[2] ? cols[2].trim() : 'N/A';
+                const empresa = cols[3] ? cols[3].trim() : 'N/A';
+                
+                // Conversión de campos numéricos / estado
+                const dias = cols[4] ? parseInt(cols[4].trim(), 10) || 0 : 0;
+                const periodo = cols[5] ? cols[5].trim() : '-';
+                const estado = cols[6] ? cols[6].trim().toUpperCase() : (dias > 0 ? 'PENDIENTE' : 'ACTIVO');
+
                 rawData.push({
-                    ficha: columns[0] ? columns[0].trim() : 'N/A',
-                    nombre: columns[1] ? columns[1].trim() : 'N/A',
-                    cargo: columns[2] ? columns[2].trim() : 'N/A',
-                    diasPendientes: columns[3] ? parseInt(columns[3].trim(), 10) || 0 : 0,
-                    periodo: columns[4] ? columns[4].trim() : 'N/A',
-                    estado: columns[5] ? columns[5].trim().toUpperCase() : 'ACTIVO'
+                    ficha: ficha,
+                    nombre: nombre,
+                    unidad: unidad,
+                    empresa: empresa,
+                    diasPendientes: dias,
+                    periodo: periodo,
+                    estado: estado
                 });
             }
         });
 
+        populateUnitDropdown();
         filteredData = [...rawData];
         renderAll();
     }
 
+    function populateUnitDropdown() {
+        const unitSelect = document.getElementById('unitFilter');
+        unitSelect.innerHTML = '<option value="ALL">Todas las Unidades</option>';
+        
+        // Extraer unidades únicas del archivo TXT
+        const units = [...new Set(rawData.map(item => item.unidad))].sort();
+
+        units.forEach(unit => {
+            if (unit && unit !== 'N/A') {
+                const option = document.createElement('option');
+                option.value = unit;
+                option.textContent = unit;
+                unitSelect.appendChild(option);
+            }
+        });
+    }
+
     function filterData() {
         const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const selectedUnit = document.getElementById('unitFilter').value;
         const statusValue = document.getElementById('statusFilter').value;
 
         filteredData = rawData.filter(item => {
             const matchesSearch = item.nombre.toLowerCase().includes(searchValue) || 
                                   item.ficha.toLowerCase().includes(searchValue) ||
-                                  item.cargo.toLowerCase().includes(searchValue);
+                                  item.empresa.toLowerCase().includes(searchValue);
             
+            const matchesUnit = (selectedUnit === 'ALL') || (item.unidad === selectedUnit);
             const matchesStatus = (statusValue === 'ALL') || (item.estado === statusValue);
 
-            return matchesSearch && matchesStatus;
+            return matchesSearch && matchesUnit && matchesStatus;
         });
 
         renderAll();
@@ -318,19 +341,19 @@
         tbody.innerHTML = '';
 
         if (filteredData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No se encontraron registros.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No se encontraron registros.</td></tr>';
             return;
         }
 
         filteredData.forEach(item => {
             const tr = document.createElement('tr');
-
             const badgeClass = item.estado === 'ACTIVO' ? 'badge-active' : 'badge-pending';
 
             tr.innerHTML = `
                 <td>${item.ficha}</td>
                 <td>${item.nombre}</td>
-                <td>${item.cargo}</td>
+                <td>${item.unidad}</td>
+                <td>${item.empresa}</td>
                 <td>${item.diasPendientes}</td>
                 <td>${item.periodo}</td>
                 <td><span class="badge ${badgeClass}">${item.estado}</span></td>
