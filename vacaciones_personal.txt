@@ -1,4 +1,3 @@
-ITEM	UNIDAD	NOMINA	CEDULA	APELLIDO Y NOMBRE	ROL	Ubicación	GUARDIA	dias de Vacaciones	Vacaciones 2026	Vacaciones 2027	Area	Grupo
 1	Operaciones de Producción	VULCAN	V- 20,737,508	LEAL VICENTE	Coordinador de Pozos	Campo Cariña	5X2	21		2027-03-01	Pozos	
 2	Operaciones de Producción	ATO PDVSA	V- 18,112,864	RODRIGUEZ RONALD	Coordinador de Estación	Campo Cariña	5X2	34		2027-12-13	Estaciones	
 3	Producción	VULCAN	V- 15,376,537	ABREU SERGIO 	Supervisor de Estación 	Bared-10	5x2	21		2027-11-05	Estaciones	
