@@ -79,7 +79,6 @@
             outline: none;
         }
 
-        /* Contenedor del gráfico con scroll vertical */
         .chart-container {
             background: var(--card-bg);
             padding: 20px;
@@ -142,7 +141,7 @@
     <div class="header">
         <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
         <div class="header-text">
-            <h1>Planificador de Vacaciones Operacionales Campo Cariña (2026 - 2027)</h1>
+            <h1>Planificador de Vacaciones Gerencia de Operaciones Campo Cariña (2026 - 2027)</h1>
         </div>
     </div>
 
@@ -189,11 +188,11 @@
         <div class="form-group">
             <label>Guardia</label>
             <select id="filterGuardia" onchange="renderAll()">
-                <option value="ALL">Todas</option>
+                <option value="ALL">Todas las Guardias</option>
                 <option value="4x4">4x4</option>
                 <option value="5x2">5x2</option>
                 <option value="7x7">7x7</option>
-                            </select>
+                           </select>
         </div>
 
         <div class="form-group">
@@ -387,15 +386,23 @@
             const unidadFilter = document.getElementById('filterUnidad').value;
             const yearFilter = document.getElementById('filterYear').value;
             const monthFilter = document.getElementById('filterMonth').value;
-            const guardiaFilter = document.getElementById('filterGuardia').value.toLowerCase();
+            const guardiaFilter = document.getElementById('filterGuardia').value;
             const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
 
             const filtered = data.filter(d => {
+                // Filtro por Unidad
                 if (unidadFilter !== 'ALL' && d.unidad !== unidadFilter) return false;
+                
+                // Filtro por Año
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
-                if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter) return false;
+                
+                // Filtro por Guardia (CORREGIDO: se omite cuando es "ALL")
+                if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter.toLowerCase()) return false;
+                
+                // Búsqueda por Texto
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
+                // Filtro por Mes
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
                     let start = new Date(d.inicio + 'T00:00:00');
@@ -459,7 +466,6 @@
                 ano: d.ano
             }));
 
-            // AJUSTE DE ALTURA DINÁMICA: Calcula 28px por cada registro para asegurar que todos quepan
             const dynamicHeight = Math.max(400, chartData.length * 28);
             wrapper.style.height = `${dynamicHeight}px`;
 
@@ -519,7 +525,7 @@
                         },
                         y: {
                             ticks: { 
-                                autoSkip: false, // FORZA A MOSTRAR TODOS LOS NOMBRES SIN OMITIR NINGUNO
+                                autoSkip: false,
                                 font: { size: 11 } 
                             }
                         }
