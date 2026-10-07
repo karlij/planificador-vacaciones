@@ -47,7 +47,6 @@
         }
 
         .header-text h1 { margin: 0 0 4px 0; font-size: 24px; }
-        .header-text p { margin: 0; opacity: 0.9; font-size: 14px; }
 
         .controls {
             display: flex;
@@ -128,6 +127,16 @@
         }
         .tag-2026 { background: #dbeafe; color: #1e40af; }
         .tag-2027 { background: #dcfce7; color: #166534; }
+
+        footer {
+            margin-top: 30px;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+            border-top: 1px solid var(--border);
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -169,13 +178,15 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Disciplina</label>
+            <label>Disciplina / Área</label>
             <select id="filterDisciplina" onchange="renderAll()">
                 <option value="ALL">Todas</option>
                 <option value="ELECTRICIDAD">Electricidad</option>
                 <option value="FACILIDADES">Facilidades</option>
                 <option value="INSTRUMENTACIÓN">Instrumentación</option>
                 <option value="MECANICA">Mecánica</option>
+                <option value="ESTACIONES">Estaciones</option>
+                <option value="POZOS">Pozos</option>
             </select>
         </div>
         <div class="form-group">
@@ -195,7 +206,7 @@
                     <th>Item</th>
                     <th>Cédula</th>
                     <th>Trabajador</th>
-                    <th>Disciplina</th>
+                    <th>Disciplina / Área</th>
                     <th>Guardia</th>
                     <th>Año</th>
                     <th>Días Cont.</th>
@@ -209,72 +220,116 @@
         </table>
     </div>
 
+    <footer>
+        Desarrollado por Ing. Karli Jiménez
+    </footer>
+
     <script>
-        // Lista de feriados nacionales según legislación venezolana
         const feriados = [
-            // 2026
             '2026-01-01', '2026-02-16', '2026-02-17', '2026-04-02', '2026-04-03', '2026-04-19', 
             '2026-05-01', '2026-06-24', '2026-07-05', '2026-07-24', '2026-10-12', '2026-12-24', 
             '2026-12-25', '2026-12-31',
-            // 2027
             '2027-01-01', '2027-02-08', '2027-02-09', '2027-03-25', '2027-03-26', '2027-04-19', 
             '2027-05-01', '2027-06-24', '2027-07-05', '2027-07-24', '2027-10-12', '2027-12-24', 
             '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
-        let rawData = [
-            { "id": 1, "cedula": "V-16249514", "nombre": "ROJAS, ELIUVY", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-27" },
-            { "id": 1, "cedula": "V-16249514", "nombre": "ROJAS, ELIUVY", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-01-25" },
-            { "id": 2, "cedula": "V-13752904", "nombre": "SOLIS, CRUZ", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-14" },
-            { "id": 2, "cedula": "V-13752904", "nombre": "SOLIS, CRUZ", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 3, "cedula": "V-14552887", "nombre": "MEDINA ORTÍZ, EDUYS RAFAEL", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-11-09" },
-            { "id": 3, "cedula": "V-14552887", "nombre": "MEDINA ORTÍZ, EDUYS RAFAEL", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-05-17" },
-            { "id": 4, "cedula": "V-20538120", "nombre": "RONNY ALEJANDRO RODRÍGUEZ ROSAS", "disciplina": "INSTRUMENTACIÓN", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-07-05" },
-            { "id": 5, "cedula": "V-17746974", "nombre": "AGUILERA JHONANS RAMON", "disciplina": "MECANICA", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-08-10" },
-            { "id": 5, "cedula": "V-17746974", "nombre": "AGUILERA JHONANS RAMON", "disciplina": "MECANICA", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 6, "cedula": "V-10938836", "nombre": "REYES TORRES, ROMULO DEL CARMEN", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-07" },
-            { "id": 6, "cedula": "V-10938836", "nombre": "REYES TORRES, ROMULO DEL CARMEN", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-06" },
-            { "id": 7, "cedula": "V-10064313", "nombre": "GARCIA T., JUAN DE J.", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-04-20" },
-            { "id": 7, "cedula": "V-10064313", "nombre": "GARCIA T., JUAN DE J.", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-02-15" },
-            { "id": 8, "cedula": "V-13174940", "nombre": "BRICENO FUENMAYOR, MAURICIO G", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 8, "cedula": "V-13174940", "nombre": "BRICENO FUENMAYOR, MAURICIO G", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-27" },
-            { "id": 9, "cedula": "V-18229333", "nombre": "TAMOY, ADRIÁN A. F.", "disciplina": "INSTRUMENTACIÓN", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-13" },
-            { "id": 9, "cedula": "V-18229333", "nombre": "TAMOY, ADRIÁN A. F.", "disciplina": "INSTRUMENTACIÓN", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 10, "cedula": "V-13497242", "nombre": "TORRES BELLO, NIUMER DANIEL", "disciplina": "MECANICA", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-08" },
-            { "id": 10, "cedula": "V-13497242", "nombre": "TORRES BELLO, NIUMER DANIEL", "disciplina": "MECANICA", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 11, "cedula": "V-11143072", "nombre": "QUIJADA BAUZA, JOHN R.", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 11, "cedula": "V-11143072", "nombre": "QUIJADA BAUZA, JOHN R.", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 12, "cedula": "V-12051012", "nombre": "ROJAS, CUSTODIO, JOSÉ RAMÓN", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-20" },
-            { "id": 12, "cedula": "V-12051012", "nombre": "ROJAS, CUSTODIO, JOSÉ RAMÓN", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 13, "cedula": "V-18227237", "nombre": "VIVAS S., MARCOS E.", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 13, "cedula": "V-18227237", "nombre": "VIVAS S., MARCOS E.", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 14, "cedula": "V-18454011", "nombre": "GARBÁN HERNÁNDEZ, JORGE LUIS", "disciplina": "INSTRUMENTACIÓN", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 14, "cedula": "V-18454011", "nombre": "GARBÁN HERNÁNDEZ, JORGE LUIS", "disciplina": "INSTRUMENTACIÓN", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-01" },
-            { "id": 15, "cedula": "V-17747170", "nombre": "CEDEÑO LUIS JOSE", "disciplina": "MECANICA", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-20" },
-            { "id": 15, "cedula": "V-17747170", "nombre": "CEDEÑO LUIS JOSE", "disciplina": "MECANICA", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-20" },
-            { "id": 16, "cedula": "V-13157559", "nombre": "MILLÁN S., JOSÉ L.", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-09-14" },
-            { "id": 16, "cedula": "V-13157559", "nombre": "MILLÁN S., JOSÉ L.", "disciplina": "ELECTRICIDAD", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-09-06" },
-            { "id": 17, "cedula": "V-17263639", "nombre": "SALAZAR GONZÁLEZ, ALCIDES RAFAEL", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-14" },
-            { "id": 17, "cedula": "V-17263639", "nombre": "SALAZAR GONZÁLEZ, ALCIDES RAFAEL", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-04-12" },
-            { "id": 18, "cedula": "V-16077785", "nombre": "JOHAN ANTONIO TENÍAS UZCÁTEGUI", "disciplina": "FACILIDADES", "guardia": "4X4", "dias": 21, "ano": 2026, "inicio": "2026-07-12" },
-            { "id": 19, "cedula": "V-17590243", "nombre": "VÍCTOR DANIEL ROMERO MARCANO", "disciplina": "INSTRUMENTACIÓN", "guardia": "4X4", "dias": 21, "ano": 2026, "inicio": "2026-09-06" },
-            { "id": 20, "cedula": "V-17869233", "nombre": "FREDDY RAFAEL GIL LÓPEZ", "disciplina": "MECANICA", "guardia": "4X4", "dias": 21, "ano": 2026, "inicio": "2026-07-12" },
-            { "id": 21, "cedula": "V-11901673", "nombre": "JUAN CARLOS HERNANDEZ LOPEZ", "disciplina": "ELECTRICIDAD", "guardia": "5X2", "dias": 21, "ano": 2026, "inicio": "2026-12-28" },
-            { "id": 21, "cedula": "V-11901673", "nombre": "JUAN CARLOS HERNANDEZ LOPEZ", "disciplina": "ELECTRICIDAD", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-11-01" },
-            { "id": 22, "cedula": "V-13696462", "nombre": "JADIXON JOSÉ CAMACHO PERALTA", "disciplina": "ELECTRICIDAD", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 23, "cedula": "V-17786819", "nombre": "NOEL ENRIQUE SEQUERA SALAZAR", "disciplina": "ELECTRICIDAD", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-08-09" },
-            { "id": 24, "cedula": "V-10068174", "nombre": "JOSE GREGORIO QUIÑONES VASQUEZ", "disciplina": "FACILIDADES", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-01-12" },
-            { "id": 24, "cedula": "V-10068174", "nombre": "JOSE GREGORIO QUIÑONES VASQUEZ", "disciplina": "FACILIDADES", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 25, "cedula": "V-15128766", "nombre": "MAIKER RAFAEL RODRÍGUEZ ESPINOSA", "disciplina": "FACILIDADES", "guardia": "5X2", "dias": 21, "ano": 2026, "inicio": "2026-08-23" },
-            { "id": 26, "cedula": "V-16396024", "nombre": "MOYA REGNAULT, JESUS AQUILES", "disciplina": "INSTRUMENTACIÓN", "guardia": "5X2", "dias": 34, "ano": 2026, "inicio": "2026-07-27" },
-            { "id": 26, "cedula": "V-16396024", "nombre": "MOYA REGNAULT, JESUS AQUILES", "disciplina": "INSTRUMENTACIÓN", "guardia": "5X2", "dias": 34, "ano": 2027, "inicio": "2027-07-26" },
-            { "id": 27, "cedula": "V-28095192", "nombre": "ENZO JOSÉ FLORES BOLÍVAR", "disciplina": "INSTRUMENTACIÓN", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-11-22" },
-            { "id": 28, "cedula": "V-30386338", "nombre": "PABLO LUIS NOE ROMERO", "disciplina": "INSTRUMENTACIÓN", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-10-18" },
-            { "id": 29, "cedula": "V-12680570", "nombre": "PERDOMO TOVAR, HENRRY LUIS", "disciplina": "MECANICA", "guardia": "5X2", "dias": 34, "ano": 2026, "inicio": "2026-12-28" },
-            { "id": 29, "cedula": "V-12680570", "nombre": "PERDOMO TOVAR, HENRRY LUIS", "disciplina": "MECANICA", "guardia": "5X2", "dias": 34, "ano": 2027, "inicio": "2027-03-22" }
-        ];
-
+        let rawData = [];
         let chartInstance = null;
+
+        // Convierte fechas DD/MM/YYYY a YYYY-MM-DD
+        function parseDateToISO(dateStr) {
+            if (!dateStr || !dateStr.trim()) return '';
+            const parts = dateStr.trim().split('/');
+            if (parts.length !== 3) return '';
+            const day = parts[0].padStart(2, '0');
+            const month = parts[1].padStart(2, '0');
+            const year = parts[2];
+            return `${year}-${month}-${day}`;
+        }
+
+        // Carga dinámicamente el archivo TXT desde la raíz del repositorio
+        async function loadTxtData() {
+            try {
+                const response = await fetch('Vacaciones personal.txt');
+                if (!response.ok) {
+                    console.error("Error al cargar el archivo de vacaciones.");
+                    return;
+                }
+                const text = await response.text();
+                parseTxtData(text);
+                renderAll();
+            } catch (err) {
+                console.error("No se pudo leer 'Vacaciones personal.txt':", err);
+            }
+        }
+
+        // Parser para transformar las filas delimitadas por tabuladores en objetos JSON
+        function parseTxtData(txtContent) {
+            const lines = txtContent.split(/\r?\n/);
+            if (lines.length < 2) return;
+
+            // Extraer encabezados y limpiar comillas/espacios
+            const headers = lines[0].split('\t').map(h => h.trim().toUpperCase());
+
+            const idxItem = headers.indexOf('ITEM');
+            const idxCedula = headers.indexOf('CEDULA');
+            const idxNombre = headers.indexOf('APELLIDO Y NOMBRE');
+            const idxGuardia = headers.indexOf('GUARDIA');
+            const idxDias = headers.indexOf('DIAS DE VACACIONES');
+            const idxVac2026 = headers.indexOf('VACACIONES 2026');
+            const idxVac2027 = headers.indexOf('VACACIONES 2027');
+            const idxArea = headers.indexOf('AREA');
+
+            const parsed = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const cols = lines[i].split('\t').map(c => c.trim());
+
+                const itemNum = cols[idxItem] || i;
+                const cedula = cols[idxCedula] || '';
+                const nombre = cols[idxNombre] || '';
+                const guardia = (cols[idxGuardia] || '').toUpperCase();
+                const dias = parseInt(cols[idxDias]) || 21;
+                const area = (cols[idxArea] || '').toUpperCase();
+
+                const date2026 = parseDateToISO(cols[idxVac2026]);
+                const date2027 = parseDateToISO(cols[idxVac2027]);
+
+                // Generar registro para 2026 si existe fecha
+                if (date2026) {
+                    parsed.push({
+                        id: itemNum,
+                        cedula: cedula,
+                        nombre: nombre,
+                        disciplina: area,
+                        guardia: guardia,
+                        dias: dias,
+                        ano: 2026,
+                        inicio: date2026
+                    });
+                }
+
+                // Generar registro para 2027 si existe fecha
+                if (date2027) {
+                    parsed.push({
+                        id: itemNum,
+                        cedula: cedula,
+                        nombre: nombre,
+                        disciplina: area,
+                        guardia: guardia,
+                        dias: dias,
+                        ano: 2027,
+                        inicio: date2027
+                    });
+                }
+            }
+
+            rawData = parsed;
+        }
 
         function calculateVacations(dateStr, days, is5x2) {
             if (!dateStr) return { fin: '', reinc: '', feriadosCount: 0 };
@@ -282,11 +337,9 @@
             let start = new Date(dateStr + 'T00:00:00');
             let feriadosEncontrados = 0;
 
-            // DÍAS CONTINUOS: El último día de vacaciones es fecha de inicio + (días - 1)
             let end = new Date(start);
             end.setDate(end.getDate() + (days - 1));
 
-            // Contar feriados nacionales dentro del período continuo de vacaciones
             let curr = new Date(start);
             while (curr <= end) {
                 let isoStr = curr.toISOString().split('T')[0];
@@ -296,8 +349,6 @@
                 curr.setDate(curr.getDate() + 1);
             }
 
-            // REINCORPORACIÓN: El primer día de trabajo posterior al descanso continuo.
-            // Si cae en fin de semana (para personal 5X2) o feriado nacional, se desplaza al siguiente día hábil.
             let reinc = new Date(end);
             reinc.setDate(reinc.getDate() + 1);
 
@@ -338,10 +389,9 @@
 
             const filtered = data.filter(d => {
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
-                if (discFilter !== 'ALL' && d.disciplina !== discFilter) return false;
+                if (discFilter !== 'ALL' && !d.disciplina.includes(discFilter)) return false;
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
-                // Filtro por Mes
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
                     let start = new Date(d.inicio + 'T00:00:00');
@@ -364,7 +414,7 @@
             });
 
             renderTable(filtered);
-            renderChart(filtered, yearFilter);
+            renderChart(filtered, yearFilter, monthFilter);
         }
 
         function renderTable(list) {
@@ -390,22 +440,39 @@
             });
         }
 
-        function renderChart(list, yearFilter) {
+        function renderChart(list, yearFilter, monthFilter) {
             const ctx = document.getElementById('ganttChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
+            let sortedList = [...list].sort((a, b) => new Date(a.inicio) - new Date(b.inicio));
+
             let minX = '2026-01-01';
             let maxX = '2027-12-31';
+            let timeUnit = 'month';
+            let displayFormat = 'MMM yyyy';
 
-            if (yearFilter === '2026') {
-                minX = '2026-01-01';
-                maxX = '2026-12-31';
-            } else if (yearFilter === '2027') {
-                minX = '2027-01-01';
-                maxX = '2027-12-31';
+            if (monthFilter !== 'ALL') {
+                timeUnit = 'day';
+                displayFormat = 'dd MMM';
+                let year = yearFilter !== 'ALL' ? parseInt(yearFilter) : 2026;
+                let monthIdx = parseInt(monthFilter) - 1;
+
+                let firstDay = new Date(year, monthIdx, 1);
+                let lastDay = new Date(year, monthIdx + 1, 0);
+
+                minX = firstDay.toISOString().split('T')[0];
+                maxX = lastDay.toISOString().split('T')[0];
+            } else {
+                if (yearFilter === '2026') {
+                    minX = '2026-01-01';
+                    maxX = '2026-12-31';
+                } else if (yearFilter === '2027') {
+                    minX = '2027-01-01';
+                    maxX = '2027-12-31';
+                }
             }
 
-            const chartData = list.filter(d => d.inicio && d.fin).map(d => ({
+            const chartData = sortedList.filter(d => d.inicio && d.fin).map(d => ({
                 x: [d.inicio, d.fin],
                 y: `${d.nombre} (${d.ano})`,
                 ano: d.ano
@@ -432,12 +499,15 @@
                         x: {
                             type: 'time',
                             time: {
-                                unit: 'month',
-                                displayFormats: { month: 'MMM yyyy' }
+                                unit: timeUnit,
+                                displayFormats: { 
+                                    day: displayFormat,
+                                    month: displayFormat 
+                                }
                             },
                             min: minX,
                             max: maxX,
-                            title: { display: true, text: 'Línea del Tiempo (2026 - 2027)' }
+                            title: { display: true, text: monthFilter !== 'ALL' ? 'Días del Mes' : 'Línea del Tiempo' }
                         },
                         y: {
                             ticks: { font: { size: 10 } }
@@ -458,7 +528,7 @@
             });
         }
 
-        window.onload = renderAll;
+        window.onload = loadTxtData;
     </script>
 </body>
 </html>
