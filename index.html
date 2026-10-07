@@ -3,366 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control y Monitoreo de Vacaciones</title>
+    <title>Planificador de Vacaciones Campo Cariña (2026 - 2027)</title>
+    <!-- Chart.js & Adaptador de Fechas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <style>
         :root {
-            --primary-color: #003366;
-            --secondary-color: #4682B4;
-            --bg-color: #f4f7f6;
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #dddddd;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --text: #1e293b;
+            --border: #e2e8f0;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
             padding: 20px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            background-color: var(--primary-color);
+        .header {
+            background-color: var(--primary);
             color: white;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
+        .header img {
+            height: 60px;
+            width: auto;
+            background-color: white;
+            padding: 5px;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+
+        .header-text h1 { margin: 0 0 4px 0; font-size: 24px; }
+        .header-text p { margin: 0; opacity: 0.9; font-size: 14px; }
+
         .controls {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
             display: flex;
-            flex-wrap: wrap;
             gap: 15px;
-            align-items: flex-end;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
+            gap: 4px;
         }
 
-        label {
+        .form-group label {
+            font-size: 11px;
             font-weight: bold;
-            font-size: 0.9rem;
+            color: #64748b;
         }
 
-        input[type="text"], select {
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 1rem;
+        select, input {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
         }
 
-        .kpi-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .kpi-card {
-            background-color: var(--card-bg);
+        .chart-container {
+            background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-            border-top: 4px solid var(--secondary-color);
-        }
-
-        .kpi-card h3 {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .kpi-card p {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+            position: relative;
+            height: 680px;
         }
 
         .table-container {
-            background-color: var(--card-bg);
-            padding: 20px;
+            background: var(--card-bg);
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
             overflow-x: auto;
+            max-height: 500px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
+            font-size: 12px;
         }
 
         th, td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
 
         th {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: #f1f5f9;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-weight: 600;
         }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+        tr:hover { background-color: #f8fafc; }
 
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.85rem;
+        .tag {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: bold;
         }
-
-        .badge-active { background-color: #e6f4ea; color: #137333; }
-        .badge-pending { background-color: #feefc3; color: #b06000; }
+        .tag-2026 { background: #dbeafe; color: #1e40af; }
+        .tag-2027 { background: #dcfce7; color: #166534; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Control y Monitoreo de Vacaciones</h1>
-    </header>
-
-    <section class="controls">
-        <div class="form-group">
-            <label for="searchInput">Buscar Trabajador / Ficha</label>
-            <input type="text" id="searchInput" placeholder="Escriba para filtrar..." oninput="filterData()">
+    <div class="header">
+        <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
+        <div class="header-text">
+            <h1>Planificador de Vacaciones Operacionales Campo Cariña (2026 - 2027)</h1>
         </div>
+    </div>
 
+    <!-- Filtros de Búsqueda y Consulta -->
+    <div class="controls">
         <div class="form-group">
-            <label for="unitFilter">Unidad / Departamento</label>
-            <select id="unitFilter" onchange="filterData()">
+            <label>Unidad</label>
+            <select id="filterUnidad" onchange="renderAll()">
                 <option value="ALL">Todas las Unidades</option>
+                <option value="PRODUCCION">Producción / Operaciones</option>
+                <option value="MANTENIMIENTO">Mantenimiento</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="statusFilter">Estado</label>
-            <select id="statusFilter" onchange="filterData()">
-                <option value="ALL">Todos</option>
-                <option value="ACTIVO">Activos</option>
-                <option value="PENDIENTE">Pendientes</option>
+            <label>Filtrar por Mes</label>
+            <select id="filterMonth" onchange="renderAll()">
+                <option value="ALL">Todos los Meses</option>
+                <option value="01">Enero</option>
+                <option value="02">Febrero</option>
+                <option value="03">Marzo</option>
+                <option value="04">Abril</option>
+                <option value="05">Mayo</option>
+                <option value="06">Junio</option>
+                <option value="07">Julio</option>
+                <option value="08">Agosto</option>
+                <option value="09">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
             </select>
         </div>
-    </section>
 
-    <section class="kpi-container">
-        <div class="kpi-card">
-            <h3>Total Trabajadores</h3>
-            <p id="kpiTotal">0</p>
+        <div class="form-group">
+            <label>Filtrar por Año</label>
+            <select id="filterYear" onchange="renderAll()">
+                <option value="ALL">Todos (2026 y 2027)</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+            </select>
         </div>
-        <div class="kpi-card">
-            <h3>Días Pendientes Totales</h3>
-            <p id="kpiPendingDays">0</p>
-        </div>
-        <div class="kpi-card">
-            <h3>Personal de Vacaciones</h3>
-            <p id="kpiOnLeave">0</p>
-        </div>
-    </section>
 
-    <section class="table-container">
-        <table>
+        <div class="form-group">
+            <label>Guardia</label>
+            <select id="filterGuardia" onchange="renderAll()">
+                <option value="ALL">Todas</option>
+                <option value="4X4">4X4</option>
+                <option value="5X2">5X2</option>
+                <option value="7X7">7X7</option>
+                <option value="1X2">1X2</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Buscar Trabajador</label>
+            <input type="text" id="filterSearch" placeholder="Nombre o Cédula..." oninput="renderAll()">
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="ganttChart"></canvas>
+    </div>
+
+    <div class="table-container">
+        <table id="dataTable">
             <thead>
                 <tr>
-                    <th>Ficha</th>
-                    <th>Nombre y Apellido</th>
-                    <th>Unidad</th>
-                    <th>Empresa</th>
-                    <th>Días Pendientes</th>
-                    <th>Último Periodo</th>
-                    <th>Estado</th>
+                    <th>Item</th>
+                    <th>Unidad / Área</th>
+                    <th>Cédula</th>
+                    <th>Trabajador</th>
+                    <th>Rol / Especialidad</th>
+                    <th>Ubicación</th>
+                    <th>Guardia</th>
+                    <th>Año</th>
+                    <th>Días</th>
+                    <th>Fecha Inicio</th>
+                    <th>Feriados</th>
+                    <th>Fecha Fin</th>
+                    <th>Reincorporación</th>
                 </tr>
             </thead>
-            <tbody id="dataTableBody">
-                <tr>
-                    <td colspan="7" style="text-align: center;">Cargando datos...</td>
-                </tr>
-            </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
-    </section>
-</div>
+    </div>
 
-<script>
-    let rawData = [];
-    let filteredData = [];
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadTxtData();
-    });
-
-    async function loadTxtData() {
-        const urlsToTry = ['vacaciones_personal.txt', 'Vacaciones%20personal.txt', 'Vacaciones personal.txt'];
-        
-        for (let url of urlsToTry) {
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    const text = await response.text();
-                    if (text.trim().length > 0) {
-                        parseTxtData(text);
-                        return;
-                    }
-                }
-            } catch (e) {
-                console.warn("No se pudo cargar automáticamente:", url);
-            }
-        }
-
-        document.getElementById('dataTableBody').innerHTML = 
-            '<tr><td colspan="7" style="text-align: center; color: red;">No se pudo cargar vacaciones_personal.txt. Asegúrese de ejecutarlo desde un servidor local (Live Server).</td></tr>';
-    }
-
-    function parseTxtData(text) {
-        const lines = text.split('\n');
-        rawData = [];
-
-        lines.forEach((line) => {
-            const trimmed = line.trim();
-            if (!trimmed) return;
-
-            // Divide las columnas separadas por tabulador (\t) o comas/puntos y comas
-            let cols = trimmed.split('\t');
-            if (cols.length < 2) {
-                cols = trimmed.split(/[,;]+/);
-            }
-
-            // Omitir la fila del encabezado si existe en el TXT
-            if (cols[0].toLowerCase().includes('ficha') || cols[1]?.toLowerCase().includes('nombre')) {
-                return;
-            }
-
-            // Mapeo adaptado al orden del archivo TXT original
-            if (cols.length >= 3) {
-                const ficha = cols[0] ? cols[0].trim() : 'N/A';
-                const nombre = cols[1] ? cols[1].trim() : 'N/A';
-                const unidad = cols[2] ? cols[2].trim() : 'N/A';
-                const empresa = cols[3] ? cols[3].trim() : 'N/A';
-                
-                // Conversión de campos numéricos / estado
-                const dias = cols[4] ? parseInt(cols[4].trim(), 10) || 0 : 0;
-                const periodo = cols[5] ? cols[5].trim() : '-';
-                const estado = cols[6] ? cols[6].trim().toUpperCase() : (dias > 0 ? 'PENDIENTE' : 'ACTIVO');
-
-                rawData.push({
-                    ficha: ficha,
-                    nombre: nombre,
-                    unidad: unidad,
-                    empresa: empresa,
-                    diasPendientes: dias,
-                    periodo: periodo,
-                    estado: estado
-                });
-            }
-        });
-
-        populateUnitDropdown();
-        filteredData = [...rawData];
-        renderAll();
-    }
-
-    function populateUnitDropdown() {
-        const unitSelect = document.getElementById('unitFilter');
-        unitSelect.innerHTML = '<option value="ALL">Todas las Unidades</option>';
-        
-        // Extraer unidades únicas del archivo TXT
-        const units = [...new Set(rawData.map(item => item.unidad))].sort();
-
-        units.forEach(unit => {
-            if (unit && unit !== 'N/A') {
-                const option = document.createElement('option');
-                option.value = unit;
-                option.textContent = unit;
-                unitSelect.appendChild(option);
-            }
-        });
-    }
-
-    function filterData() {
-        const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        const selectedUnit = document.getElementById('unitFilter').value;
-        const statusValue = document.getElementById('statusFilter').value;
-
-        filteredData = rawData.filter(item => {
-            const matchesSearch = item.nombre.toLowerCase().includes(searchValue) || 
-                                  item.ficha.toLowerCase().includes(searchValue) ||
-                                  item.empresa.toLowerCase().includes(searchValue);
-            
-            const matchesUnit = (selectedUnit === 'ALL') || (item.unidad === selectedUnit);
-            const matchesStatus = (statusValue === 'ALL') || (item.estado === statusValue);
-
-            return matchesSearch && matchesUnit && matchesStatus;
-        });
-
-        renderAll();
-    }
-
-    function renderAll() {
-        renderKPIs();
-        renderTable();
-    }
-
-    function renderKPIs() {
-        const total = filteredData.length;
-        const totalPendingDays = filteredData.reduce((acc, curr) => acc + curr.diasPendientes, 0);
-        const onLeave = filteredData.filter(item => item.estado === 'VACACIONES' || item.estado === 'INACTIVO').length;
-
-        document.getElementById('kpiTotal').textContent = total;
-        document.getElementById('kpiPendingDays').textContent = totalPendingDays;
-        document.getElementById('kpiOnLeave').textContent = onLeave;
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('dataTableBody');
-        tbody.innerHTML = '';
-
-        if (filteredData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No se encontraron registros.</td></tr>';
-            return;
-        }
-
-        filteredData.forEach(item => {
-            const tr = document.createElement('tr');
-            const badgeClass = item.estado === 'ACTIVO' ? 'badge-active' : 'badge-pending';
-
-            tr.innerHTML = `
-                <td>${item.ficha}</td>
-                <td>${item.nombre}</td>
-                <td>${item.unidad}</td>
-                <td>${item.empresa}</td>
-                <td>${item.diasPendientes}</td>
-                <td>${item.periodo}</td>
-                <td><span class="badge ${badgeClass}">${item.estado}</span></td>
-            `;
-
-            tbody.appendChild(tr);
-        });
-    }
-</script>
-
-</body>
-</html>
+    <script>
+        // Lista de feriados nacionales según legislación venezolana
+        const feriados
