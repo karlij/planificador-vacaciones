@@ -79,14 +79,22 @@
             outline: none;
         }
 
+        /* Contenedor del gráfico con scroll vertical */
         .chart-container {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border);
             margin-bottom: 25px;
+            max-height: 650px;
+            overflow-y: auto;
             position: relative;
-            height: 680px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 400px;
         }
 
         .table-container {
@@ -134,7 +142,7 @@
     <div class="header">
         <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
         <div class="header-text">
-            <h1>Planificador de Vacaciones Gerencia de Operaciones Campo Cariña (2026 - 2027)</h1>
+            <h1>Planificador de Vacaciones Operacionales Campo Cariña (2026 - 2027)</h1>
         </div>
     </div>
 
@@ -185,7 +193,8 @@
                 <option value="4x4">4x4</option>
                 <option value="5x2">5x2</option>
                 <option value="7x7">7x7</option>
-                            </select>
+                <option value="1x2">1x2</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -195,7 +204,9 @@
     </div>
 
     <div class="chart-container">
-        <canvas id="ganttChart"></canvas>
+        <div id="chartWrapper" class="chart-wrapper">
+            <canvas id="ganttChart"></canvas>
+        </div>
     </div>
 
     <div class="table-container">
@@ -232,7 +243,6 @@
             '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
-        // DATOS EXTRAÍDOS EXACTAMENTE DE LA IMAGEN
         const rawSource = [
             { id: 1, unidad: "Operaciones de Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 20.737.508", nombre: "LEAL VICENTE", rol: "Coordinador de Pozos", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-03-01" },
             { id: 2, unidad: "Operaciones de Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.112.864", nombre: "RODRIGUEZ RONALD", rol: "Coordinador de Estación", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "", v2027: "2027-12-13" },
@@ -252,7 +262,7 @@
             { id: 16, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 14.082.387", nombre: "SILVA JUAN", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-11-08" },
             { id: 17, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 12.915.160", nombre: "BELLO MANUEL", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-05" },
             { id: 18, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 16.832.346", nombre: "URRIBARRI JORGE", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-20" },
-            { id: 19, "unidad": "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 24.964.761", nombre: "CHÓPITE KENNEDY", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-20" },
+            { id: 19, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 24.964.761", nombre: "CHÓPITE KENNEDY", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-20" },
             { id: 20, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 10.068.903", nombre: "GARCIA LUIS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-11-01" },
             { id: 21, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 14.817.977", nombre: "MORENO GREGORYS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-08" },
             { id: 22, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 20.171.061", nombre: "FAJARDO RICKI", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-01" },
@@ -346,7 +356,6 @@
             rawSource.forEach(item => {
                 let is5x2 = item.guardia.toLowerCase() === '5x2';
 
-                // Si tiene fecha en 2026
                 if (item.v2026) {
                     let calc2026 = calculateVacations(item.v2026, item.dias, is5x2);
                     processed.push({
@@ -359,7 +368,6 @@
                     });
                 }
 
-                // Si tiene fecha en 2027
                 if (item.v2027) {
                     let calc2027 = calculateVacations(item.v2027, item.dias, is5x2);
                     processed.push({
@@ -389,7 +397,6 @@
                 if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter) return false;
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
-                // Filtro por Mes
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
                     let start = new Date(d.inicio + 'T00:00:00');
@@ -443,14 +450,25 @@
 
         function renderChart(list, yearFilter, monthFilter) {
             const ctx = document.getElementById('ganttChart').getContext('2d');
+            const wrapper = document.getElementById('chartWrapper');
+
             if (chartInstance) chartInstance.destroy();
+
+            const chartData = list.filter(d => d.inicio && d.fin).map(d => ({
+                x: [d.inicio, d.fin],
+                y: `${d.nombre} (${d.ano})`,
+                ano: d.ano
+            }));
+
+            // AJUSTE DE ALTURA DINÁMICA: Calcula 28px por cada registro para asegurar que todos quepan
+            const dynamicHeight = Math.max(400, chartData.length * 28);
+            wrapper.style.height = `${dynamicHeight}px`;
 
             let minX = '2026-01-01';
             let maxX = '2027-12-31';
             let timeUnit = 'month';
             let displayFormat = { month: 'MMM yyyy' };
 
-            // Configuración dinámica si se selecciona un mes específico
             if (monthFilter !== 'ALL') {
                 timeUnit = 'day';
                 displayFormat = { day: 'dd MMM' };
@@ -470,12 +488,6 @@
                 minX = '2027-01-01';
                 maxX = '2027-12-31';
             }
-
-            const chartData = list.filter(d => d.inicio && d.fin).map(d => ({
-                x: [d.inicio, d.fin],
-                y: `${d.nombre} (${d.ano})`,
-                ano: d.ano
-            }));
 
             chartInstance = new Chart(ctx, {
                 type: 'bar',
@@ -507,7 +519,10 @@
                             title: { display: true, text: monthFilter !== 'ALL' ? 'Días del Mes' : 'Línea del Tiempo' }
                         },
                         y: {
-                            ticks: { font: { size: 10 } }
+                            ticks: { 
+                                autoSkip: false, // FORZA A MOSTRAR TODOS LOS NOMBRES SIN OMITIR NINGUNO
+                                font: { size: 11 } 
+                            }
                         }
                     },
                     plugins: {
