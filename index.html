@@ -47,7 +47,6 @@
         }
 
         .header-text h1 { margin: 0 0 4px 0; font-size: 24px; }
-        .header-text p { margin: 0; opacity: 0.9; font-size: 14px; }
 
         .controls {
             display: flex;
@@ -135,7 +134,7 @@
     <div class="header">
         <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
         <div class="header-text">
-            <h1>Planificador de Vacaciones Operacionales Campo Cariña (2026 - 2027)</h1>
+            <h1>Planificador de Vacaciones Gerencia de Operaciones Campo Cariña (2026 - 2027)</h1>
         </div>
     </div>
 
@@ -145,7 +144,8 @@
             <label>Unidad</label>
             <select id="filterUnidad" onchange="renderAll()">
                 <option value="ALL">Todas las Unidades</option>
-                <option value="PRODUCCION">Producción / Operaciones</option>
+                <option value="Operaciones de Producción">Operaciones de Producción</option>
+                <option value="Producción">Producción</option>
                 <option value="MANTENIMIENTO">Mantenimiento</option>
             </select>
         </div>
@@ -182,10 +182,10 @@
             <label>Guardia</label>
             <select id="filterGuardia" onchange="renderAll()">
                 <option value="ALL">Todas</option>
-                <option value="4X4">4X4</option>
-                <option value="5X2">5X2</option>
-                <option value="7X7">7X7</option>
-                <option value="1X2">1X2</option>
+                <option value="4x4">4x4</option>
+                <option value="5x2">5x2</option>
+                <option value="7x7">7x7</option>
+                <option value="1x2">1x2</option>
             </select>
         </div>
 
@@ -205,13 +205,14 @@
                 <tr>
                     <th>Item</th>
                     <th>Unidad / Área</th>
+                    <th>Nómina</th>
                     <th>Cédula</th>
                     <th>Trabajador</th>
-                    <th>Rol / Especialidad</th>
+                    <th>Rol</th>
                     <th>Ubicación</th>
                     <th>Guardia</th>
+                    <th>Días Vac.</th>
                     <th>Año</th>
-                    <th>Días</th>
                     <th>Fecha Inicio</th>
                     <th>Feriados</th>
                     <th>Fecha Fin</th>
@@ -232,98 +233,76 @@
             '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
-        let rawData = [
-            { "id": 1, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-20.737.508", "nombre": "LEAL VICENTE", "rol": "Coordinador de Pozos", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-03-01" },
-            { "id": 2, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-18.112.864", "nombre": "RODRIGUEZ R. JOSÉ", "rol": "Coordinador de Estación", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 34, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 3, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-15.376.537", "nombre": "ABREU SERGIO", "rol": "Supervisor de Estación", "ubicacion": "Bared-10", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-11-05" },
-            { "id": 4, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-10.936.415", "nombre": "URPIN ANGELL", "rol": "Supervisor de Estación", "ubicacion": "Bared-10", "guardia": "1X2", "dias": 34, "ano": 2027, "inicio": "2027-12-06" },
-            { "id": 5, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-12.439.111", "nombre": "FLORES YUVER", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-02-13" },
-            { "id": 6, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-15.716.639", "nombre": "BARRETO JOHN", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-15" },
-            { "id": 7, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-19.143.475", "nombre": "CINI LINO ANDRES", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-15" },
-            { "id": 8, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-14.640.561", "nombre": "ORDAZ FREDDY", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-04-05" },
-            { "id": 9, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-17.746.783", "nombre": "ROSAS ANGEL", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-04-05" },
-            { "id": 10, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-15.877.062", "nombre": "LICLI I DIOBER", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-10-04" },
-            { "id": 11, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-15.846.580", "nombre": "MEDINA JOSE", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-11-01" },
-            { "id": 12, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-16.172.617", "nombre": "GONZALEZ GREGORIO", "rol": "Operador de Estación", "ubicacion": "Bared-10", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 13, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-14.029.707", "nombre": "PEREZ RICHARD", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-02-01" },
-            { "id": 14, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-18.228.671", "nombre": "CAVADIA ZUMMI", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-07-15" },
-            { "id": 15, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-11.435.750", "nombre": "RODRIGUEZ JESUS", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-02" },
-            { "id": 16, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-14.082.387", "nombre": "SILVA JUAN", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-11-08" },
-            { "id": 17, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-12.915.160", "nombre": "BELLO MANUEL", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-12-06" },
-            { "id": 18, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-16.832.346", "nombre": "URRIBARRI JORE", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 18, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-16.832.346", "nombre": "URRIBARRI JORE", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-20" },
-            { "id": 19, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-20.964.761", "nombre": "CHOPILL KENNEDY", "rol": "Operador de Estación", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-12-23" },
-            { "id": 20, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-10.068.903", "nombre": "GARCIA LUIS", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-11-01" },
-            { "id": 21, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-14.817.977", "nombre": "MORENO GREGORIO", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-02-08" },
-            { "id": 22, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-20.171.061", "nombre": "FAJARDO RICKY", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-01" },
-            { "id": 23, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-12.677.861", "nombre": "MARTINEZ MARCOS", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-07" },
-            { "id": 23, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-12.677.861", "nombre": "MARTINEZ MARCOS", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-05-03" },
-            { "id": 24, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-12.438.753", "nombre": "LEDEZMA ROSAFOROS", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 25, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-15.005.059", "nombre": "GARCIA VICENTE", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 25, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-15.005.059", "nombre": "GARCIA VICENTE", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-09-13" },
-            { "id": 26, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-26.721.370", "nombre": "PARRA LUIS", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 27, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-8.974.303", "nombre": "GÓMEZ JESÚS", "rol": "Operador de Pozos", "ubicacion": "Cariña Norte", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-08-02" },
-            { "id": 28, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-26.566.685", "nombre": "URBINA ALI", "rol": "Supervisor Campo", "ubicacion": "Cariña Norte", "guardia": "7X7", "dias": 21, "ano": 2027, "inicio": "2027-05-03" },
-            { "id": 29, "unidad": "PRODUCCION", "area": "Pozos", "cedula": "V-10.057.494", "nombre": "MARIN YOEL", "rol": "Supervisor Campo", "ubicacion": "Cariña Norte", "guardia": "7X7", "dias": 34, "ano": 2027, "inicio": "2027-05-14" },
-            { "id": 30, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-10.937.365", "nombre": "RONDON CARLOS", "rol": "Supervisor Estación", "ubicacion": "Cariña Norte", "guardia": "7X7", "dias": 34, "ano": 2027, "inicio": "2027-11-01" },
-            { "id": 31, "unidad": "PRODUCCION", "area": "Estaciones", "cedula": "V-18.414.421", "nombre": "AGUILERA JONATHAN", "rol": "Supervisor Campo", "ubicacion": "Cariña Norte", "guardia": "7X7", "dias": 34, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 32, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-12.015.204", "nombre": "MARTINEZ MANUEL", "rol": "Operador de Pozos/Campo", "ubicacion": "Cariña Sur", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-02-01" },
-            { "id": 33, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-12.681.204", "nombre": "MOLINA SERGIO", "rol": "Operador de Pozos/Campo", "ubicacion": "Cariña Sur", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 33, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-12.681.204", "nombre": "MOLINA SERGIO", "rol": "Operador de Pozos/Campo", "ubicacion": "Cariña Sur", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-22" },
-            { "id": 34, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-15.375.920", "nombre": "PEREZ JUAN", "rol": "Operador de Pozos/Campo", "ubicacion": "Cariña Sur", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-06-14" },
-            { "id": 35, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-12.680.774", "nombre": "GÓMEZ CARLOS", "rol": "Operador de Pozos/Campo", "ubicacion": "Cariña Sur", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-20" },
-            { "id": 36, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-8.458.648", "nombre": "LEZAMA HENRY", "rol": "Supervisor Campo", "ubicacion": "Cariña Sur", "guardia": "7X7", "dias": 21, "ano": 2027, "inicio": "2027-07-05" },
-            { "id": 37, "unidad": "PRODUCCION", "area": "Estación / Pozos", "cedula": "V-13.611.204", "nombre": "CAMPOS RAFAEL", "rol": "Supervisor Campo", "ubicacion": "Cariña Sur", "guardia": "7X7", "dias": 34, "ano": 2027, "inicio": "2027-12-06" },
+        // DATOS EXTRAÍDOS EXACTAMENTE DE LA IMAGEN
+        const rawSource = [
+            { id: 1, unidad: "Operaciones de Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 20.737.508", nombre: "LEAL VICENTE", rol: "Coordinador de Pozos", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-03-01" },
+            { id: 2, unidad: "Operaciones de Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.112.864", nombre: "RODRIGUEZ RONALD", rol: "Coordinador de Estación", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "", v2027: "2027-12-13" },
+            { id: 3, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 15.376.537", nombre: "ABREU SERGIO", rol: "Supervisor de Estación", ubicacion: "Bared-10", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-11-05" },
+            { id: 4, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 10.936.415", nombre: "URPIN ANGELL", rol: "Supervisor de Estación", ubicacion: "Bared-10", guardia: "1x2", dias: 34, v2026: "", v2027: "2027-12-06" },
+            { id: 5, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 12.439.111", nombre: "FLORES YUVER", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-02-13" },
+            { id: 6, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 15.716.639", nombre: "BARRETO JOHN", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-15" },
+            { id: 7, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 19.143.475", nombre: "CINI LINO ANDRYKSON", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-15" },
+            { id: 8, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 14.640.561", nombre: "ORDAZ FREDDY", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-04-05" },
+            { id: 9, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 17.746.783", nombre: "ROSAS ANGEL", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-04-05" },
+            { id: 10, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 15.877.062", nombre: "LICLI I DIOBER", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-10-04" },
+            { id: 11, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 15.846.580", nombre: "MEDINA JOSE", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-11-01" },
+            { id: 12, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 16.172.617", nombre: "GONZÁLEZ GREDOY", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-13" },
+            { id: 13, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 14.029.707", nombre: "PEREZ RICHARD", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-01" },
+            { id: 14, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 18.228.671", nombre: "CAVADIA ZUMNURI", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-15" },
+            { id: 15, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 11.435.750", nombre: "RODRIGUEZ JESUS", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-08-02" },
+            { id: 16, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 14.082.387", nombre: "SILVA JUAN", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-11-08" },
+            { id: 17, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 12.915.160", nombre: "BELLO MANUEL", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-05" },
+            { id: 18, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 16.832.346", nombre: "URRIBARRI JORGE", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-20" },
+            { id: 19, "unidad": "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 24.964.761", nombre: "CHÓPITE KENNEDY", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-20" },
+            { id: 20, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 10.068.903", nombre: "GARCIA LUIS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-11-01" },
+            { id: 21, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 14.817.977", nombre: "MORENO GREGORYS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-08" },
+            { id: 22, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 20.171.061", nombre: "FAJARDO RICKI", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-01" },
+            { id: 23, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 12.677.861", nombre: "MARTINEZ MARCOS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-07", v2027: "2027-05-03" },
+            { id: 24, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 12.438.753", nombre: "LEDEZMA ROSALIO", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-08-16" },
+            { id: 25, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 15.005.059", nombre: "GARCIA VICENTE", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-09-13" },
+            { id: 26, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 26.721.370", nombre: "PARRA LUIS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-19" },
+            { id: 27, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 8.974.303", nombre: "GÓMEZ JESÚS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-08-02" },
+            { id: 28, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 26.566.685", nombre: "URBINA ALI ALDO", rol: "Supervisor Campo", ubicacion: "Cariña Norte", guardia: "7x7", dias: 21, v2026: "", v2027: "2027-05-03" },
+            { id: 29, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 10.057.494", nombre: "MARIN YOEL", rol: "Supervisor Campo", ubicacion: "Cariña Norte", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-06-14" },
+            { id: 30, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 10.937.365", nombre: "RONDON CARLOS", rol: "Supervisor Estación", ubicacion: "Cariña Norte", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-11-01" },
+            { id: 31, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.414.421", nombre: "AGUILERA JONATHAN", rol: "Supervisor Estación", ubicacion: "Cariña Norte", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-12-13" },
+            { id: 32, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 12.015.204", nombre: "MARTINEZ MANUEL", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-01" },
+            { id: 33, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 12.681.204", nombre: "MOLINA SERGIO", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-03-22" },
+            { id: 34, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 15.375.920", nombre: "PEREZ JUAN", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-06-14" },
+            { id: 35, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 12.680.774", nombre: "GOMEZ CARLOS", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-12-20" },
+            { id: 36, unidad: "Producción", area: "Estación / Pozos", nomina: "VULCAN", cedula: "V- 8.458.648", nombre: "LEZAMA HENRY", rol: "Supervisor Campo", ubicacion: "Cariña Sur", guardia: "7x7", dias: 21, v2026: "", v2027: "2027-07-05" },
+            { id: 37, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 13.611.204", nombre: "CAMPOS RAFAEL", rol: "Supervisor Campo", ubicacion: "Cariña Sur", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-12-06" },
 
             // MANTENIMIENTO
-            { "id": 38, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 1", "cedula": "V-16.249.514", "nombre": "ROJAS, ELIUVY", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-27" },
-            { "id": 38, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 1", "cedula": "V-16.249.514", "nombre": "ROJAS, ELIUVY", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-01-25" },
-            { "id": 39, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 1", "cedula": "V-13.752.904", "nombre": "SOLIS, CRUZ", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-14" },
-            { "id": 39, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 1", "cedula": "V-13.752.904", "nombre": "SOLIS, CRUZ", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 40, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 1", "cedula": "V-14.552.887", "nombre": "MEDINA EDUY", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-11-09" },
-            { "id": 40, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 1", "cedula": "V-14.552.887", "nombre": "MEDINA EDUY", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-05-17" },
-            { "id": 41, "unidad": "MANTENIMIENTO", "area": "Instrumentación GRUPO 1", "cedula": "V-20.538.120", "nombre": "RODRIGUEZ R.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 21, "ano": 2027, "inicio": "2027-07-05" },
-            { "id": 42, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 1", "cedula": "V-17.746.974", "nombre": "AGUILERA J.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-08-10" },
-            { "id": 42, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 1", "cedula": "V-17.746.974", "nombre": "AGUILERA J.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 43, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 2", "cedula": "V-10.938.836", "nombre": "REYES ROMULO", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-07" },
-            { "id": 43, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 2", "cedula": "V-10.938.836", "nombre": "REYES ROMULO", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-06" },
-            { "id": 44, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 2", "cedula": "V-10.064.313", "nombre": "GARCIA JUAN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-04-20" },
-            { "id": 44, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 2", "cedula": "V-10.064.313", "nombre": "GARCIA JUAN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-02-15" },
-            { "id": 45, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 2", "cedula": "V-13.174.940", "nombre": "BRICENO MAU.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 45, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 2", "cedula": "V-13.174.940", "nombre": "BRICENO MAU.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-27" },
-            { "id": 46, "unidad": "MANTENIMIENTO", "area": "Instrumentación GRUPO 2", "cedula": "V-18.229.333", "nombre": "TAMOY ADRIÁN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-13" },
-            { "id": 46, "unidad": "MANTENIMIENTO", "area": "Instrumentación GRUPO 2", "cedula": "V-18.229.333", "nombre": "TAMOY ADRIÁN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 47, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 2", "cedula": "V-13.497.242", "nombre": "TORRES NIUM.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-08" },
-            { "id": 47, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 2", "cedula": "V-13.497.242", "nombre": "TORRES NIUM.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 48, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 3", "cedula": "V-11.143.072", "nombre": "QUIJADA JOHN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 48, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 3", "cedula": "V-11.143.072", "nombre": "QUIJADA JOHN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 49, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 3", "cedula": "V-12.051.012", "nombre": "ROJAS JOSÉ", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-20" },
-            { "id": 49, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 3", "cedula": "V-12.051.012", "nombre": "ROJAS JOSÉ", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-08-16" },
-            { "id": 50, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 3", "cedula": "V-18.227.237", "nombre": "VIVAS MARCOS", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-21" },
-            { "id": 50, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 3", "cedula": "V-18.227.237", "nombre": "VIVAS MARCOS", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 51, "unidad": "MANTENIMIENTO", "area": "Instrumentación GRUPO 3", "cedula": "V-18.454.011", "nombre": "GARBAN JORGE", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-01" },
-            { "id": 52, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 3", "cedula": "V-17.747.170", "nombre": "CEDEÑO LUIS", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-07-20" },
-            { "id": 52, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 3", "cedula": "V-17.747.170", "nombre": "CEDEÑO LUIS", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-03-20" },
-            { "id": 53, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 4", "cedula": "V-13.157.559", "nombre": "MILLÁN JOSÉ", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-09-14" },
-            { "id": 53, "unidad": "MANTENIMIENTO", "area": "Electricidad GRUPO 4", "cedula": "V-13.157.559", "nombre": "MILLÁN JOSÉ", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-09-06" },
-            { "id": 54, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 4", "cedula": "V-17.263.639", "nombre": "SALAZAR ALC.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2026, "inicio": "2026-12-14" },
-            { "id": 54, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 4", "cedula": "V-17.263.639", "nombre": "SALAZAR ALC.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 34, "ano": 2027, "inicio": "2027-04-12" },
-            { "id": 55, "unidad": "MANTENIMIENTO", "area": "Facilidades GRUPO 4", "cedula": "V-16.077.785", "nombre": "TENIAS JOHAN", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 21, "ano": 2026, "inicio": "2026-07-12" },
-            { "id": 56, "unidad": "MANTENIMIENTO", "area": "Instrumentación GRUPO 4", "cedula": "V-17.590.243", "nombre": "ROMERO VICT.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 21, "ano": 2026, "inicio": "2026-09-06" },
-            { "id": 57, "unidad": "MANTENIMIENTO", "area": "Mecánica GRUPO 4", "cedula": "V-17.869.233", "nombre": "GIL FREDDY", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "4X4", "dias": 21, "ano": 2026, "inicio": "2026-07-12" },
-            { "id": 58, "unidad": "MANTENIMIENTO", "area": "Electricidad", "cedula": "V-11.901.673", "nombre": "HERNÁNDEZ JUAN", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2026, "inicio": "2026-12-28" },
-            { "id": 58, "unidad": "MANTENIMIENTO", "area": "Electricidad", "cedula": "V-11.901.673", "nombre": "HERNÁNDEZ JUAN", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-11-01" },
-            { "id": 59, "unidad": "MANTENIMIENTO", "area": "Electricidad", "cedula": "V-13.696.462", "nombre": "CAMACHO JAD.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-07-19" },
-            { "id": 60, "unidad": "MANTENIMIENTO", "area": "Electricidad", "cedula": "V-17.786.819", "nombre": "SEQUERA NOEL", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-08-09" },
-            { "id": 61, "unidad": "MANTENIMIENTO", "area": "Facilidades", "cedula": "V-10.068.174", "nombre": "QUIÑONES JOSÉ", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-01-12" },
-            { "id": 61, "unidad": "MANTENIMIENTO", "area": "Facilidades", "cedula": "V-10.068.174", "nombre": "QUIÑONES JOSÉ", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-12-13" },
-            { "id": 62, "unidad": "MANTENIMIENTO", "area": "Facilidades", "cedula": "V-15.128.766", "nombre": "RODRIGUEZ M.", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2026, "inicio": "2026-08-23" },
-            { "id": 63, "unidad": "MANTENIMIENTO", "area": "Instrumentación", "cedula": "V-16.396.024", "nombre": "MOYA JESÚS", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 34, "ano": 2026, "inicio": "2026-07-27" },
-            { "id": 63, "unidad": "MANTENIMIENTO", "area": "Instrumentación", "cedula": "V-16.396.024", "nombre": "MOYA JESÚS", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 34, "ano": 2027, "inicio": "2027-07-26" },
-            { "id": 64, "unidad": "MANTENIMIENTO", "area": "Instrumentación", "cedula": "V-28.095.192", "nombre": "FLORES ENZO", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-11-22" },
-            { "id": 65, "unidad": "MANTENIMIENTO", "area": "Instrumentación", "cedula": "V-30.386.338", "nombre": "NOE PABLO", "rol": "Técnico", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 21, "ano": 2027, "inicio": "2027-10-18" },
-            { "id": 66, "unidad": "MANTENIMIENTO", "area": "Mecánica", "cedula": "V-12.680.570", "nombre": "PERDOMO H.", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 34, "ano": 2026, "inicio": "2026-12-28" },
-            { "id": 66, "unidad": "MANTENIMIENTO", "area": "Mecánica", "cedula": "V-12.680.570", "nombre": "PERDOMO H.", "rol": "Líder", "ubicacion": "Campo Cariña", "guardia": "5X2", "dias": 34, "ano": 2027, "inicio": "2027-03-22" }
+            { id: 38, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 16.249.514", nombre: "ROJAS ELIUVY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-27", v2027: "2027-01-25" },
+            { id: 39, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 13.752.904", nombre: "SOLIS CRUZ", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-12-13" },
+            { id: 40, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 14.552.887", nombre: "MEDINA EDUYS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-11-09", v2027: "2027-05-17" },
+            { id: 41, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 20.538.120", nombre: "RODRIGUEZ RONNY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-05" },
+            { id: 42, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 17.746.974", nombre: "AGUILERA JONANS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-08-10", v2027: "2027-08-16" },
+            { id: 43, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.938.836", nombre: "REYES ROMULO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-07", v2027: "2027-12-06" },
+            { id: 44, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.064.313", nombre: "GARCIA JUAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-04-20", v2027: "2027-02-15" },
+            { id: 45, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.174.940", nombre: "BRICENO MAURICIO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-27" },
+            { id: 46, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 18.229.333", nombre: "TAVOY ADRIAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-13", v2027: "2027-12-13" },
+            { id: 47, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.497.242", nombre: "TORRES NIUMER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2027-03-08", v2027: "2027-08-16" },
+            { id: 48, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 11.143.072", nombre: "QUIJADA JOHN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
+            { id: 49, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 12.051.012", nombre: "ROJAS JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-08-16" },
+            { id: 50, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.227.237", nombre: "VIVAS MARCOS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
+            { id: 51, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.454.011", nombre: "GARBAN JORGE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-03-01" },
+            { id: 52, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 17.747.170", nombre: "CEDEÑO LUIS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-03-20" },
+            { id: 53, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 13.157.559", nombre: "MILLAN JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-09-14", v2027: "2027-09-06" },
+            { id: 54, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 17.263.639", nombre: "SALAZAR ALCIDES", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-04-12" },
+            { id: 55, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 4 VULCAN", cedula: "V- 16.077.785", nombre: "TENIAS JOHAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
+            { id: 56, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.590.243", nombre: "ROMERO VICTOR", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-09-05" },
+            { id: 57, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.869.233", nombre: "GIL FREDDY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
+            { id: 58, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 11.901.673", nombre: "HERNÁNDEZ JUAN", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2026-12-28", v2027: "2027-11-01" },
+            { id: 59, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 13.696.462", nombre: "CAMACHO JACKSON", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-07-19" },
+            { id: 60, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 17.786.819", nombre: "SEQUERA NOEL", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-08-09" },
+            { id: 61, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "VULCAN", cedula: "V- 10.068.174", nombre: "QUIÑONES JOSE", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2027-01-12", v2027: "2027-12-13" },
+            { id: 62, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "VULCAN", cedula: "V- 15.128.766", nombre: "RODRIGUEZ YAKER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2026-08-23" },
+            { id: 63, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "ATO PDVSA", cedula: "V- 16.396.024", nombre: "MOYA JESUS", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-07-27", v2027: "2027-07-26" },
+            { id: 64, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 28.095.192", nombre: "FLORES ENZO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-11-22" },
+            { id: 65, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 30.386.338", nombre: "NOE PABLO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-10-18" },
+            { id: 66, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "ATO PDVSA", cedula: "V- 12.680.570", nombre: "PERDOMO HENRY", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-12-28", v2027: "2027-03-22" }
         ];
 
         let chartInstance = null;
@@ -364,17 +343,37 @@
         }
 
         function calculateAllData() {
-            return rawData.map((item, idx) => {
-                let is5x2 = item.guardia === '5X2';
-                let calc = calculateVacations(item.inicio, item.dias, is5x2);
-                return {
-                    ...item,
-                    index: idx,
-                    fin: calc.fin,
-                    reinc: calc.reinc,
-                    feriadosCount: calc.feriadosCount
-                };
+            let processed = [];
+            rawSource.forEach(item => {
+                let is5x2 = item.guardia.toLowerCase() === '5x2';
+
+                // Si tiene fecha en 2026
+                if (item.v2026) {
+                    let calc2026 = calculateVacations(item.v2026, item.dias, is5x2);
+                    processed.push({
+                        ...item,
+                        ano: 2026,
+                        inicio: item.v2026,
+                        fin: calc2026.fin,
+                        reinc: calc2026.reinc,
+                        feriadosCount: calc2026.feriadosCount
+                    });
+                }
+
+                // Si tiene fecha en 2027
+                if (item.v2027) {
+                    let calc2027 = calculateVacations(item.v2027, item.dias, is5x2);
+                    processed.push({
+                        ...item,
+                        ano: 2027,
+                        inicio: item.v2027,
+                        fin: calc2027.fin,
+                        reinc: calc2027.reinc,
+                        feriadosCount: calc2027.feriadosCount
+                    });
+                }
             });
+            return processed;
         }
 
         function renderAll() {
@@ -382,13 +381,13 @@
             const unidadFilter = document.getElementById('filterUnidad').value;
             const yearFilter = document.getElementById('filterYear').value;
             const monthFilter = document.getElementById('filterMonth').value;
-            const guardiaFilter = document.getElementById('filterGuardia').value;
+            const guardiaFilter = document.getElementById('filterGuardia').value.toLowerCase();
             const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
 
             const filtered = data.filter(d => {
                 if (unidadFilter !== 'ALL' && d.unidad !== unidadFilter) return false;
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
-                if (guardiaFilter !== 'ALL' && d.guardia !== guardiaFilter) return false;
+                if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter) return false;
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
                 // Filtro por Mes
@@ -426,13 +425,14 @@
                 tr.innerHTML = `
                     <td>${item.id}</td>
                     <td><strong>${item.unidad}</strong><br><small style="color:#64748b">${item.area}</small></td>
+                    <td>${item.nomina}</td>
                     <td>${item.cedula}</td>
                     <td><strong>${item.nombre}</strong></td>
                     <td>${item.rol}</td>
                     <td>${item.ubicacion}</td>
                     <td>${item.guardia}</td>
-                    <td><span class="tag tag-${item.ano}">${item.ano}</span></td>
                     <td>${item.dias}</td>
+                    <td><span class="tag tag-${item.ano}">${item.ano}</span></td>
                     <td>${item.inicio}</td>
                     <td>${item.feriadosCount} feriado(s)</td>
                     <td><strong>${item.fin}</strong></td>
@@ -457,11 +457,9 @@
                 displayFormat = { day: 'dd MMM' };
 
                 let targetYear = (yearFilter !== 'ALL') ? parseInt(yearFilter) : 2027;
-                let targetMonthInt = parseInt(monthFilter); // 1 - 12
+                let targetMonthInt = parseInt(monthFilter);
                 
-                // Mínimo: día 1 del mes seleccionado
                 let startOfMonth = new Date(targetYear, targetMonthInt - 1, 1);
-                // Máximo: último día del mes seleccionado
                 let endOfMonth = new Date(targetYear, targetMonthInt, 0);
 
                 minX = startOfMonth.toISOString().split('T')[0];
@@ -502,7 +500,7 @@
                             type: 'time',
                             time: {
                                 unit: timeUnit,
-                                stepSize: (timeUnit === 'day') ? 2 : 1, // Muestra de 2 en 2 días si es por mes para no saturar
+                                stepSize: (timeUnit === 'day') ? 2 : 1,
                                 displayFormats: displayFormat
                             },
                             min: minX,
