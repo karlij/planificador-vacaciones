@@ -141,7 +141,7 @@
     <div class="header">
         <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
         <div class="header-text">
-            <h1>Planificador de Vacaciones Operacionales Campo Cariña (2026 - 2027)</h1>
+            <h1>Planificador de Vacaciones Gerencia de Operaciones Campo Cariña (2026 - 2027)</h1>
         </div>
     </div>
 
@@ -206,8 +206,12 @@
                 <option value="4x4">4x4</option>
                 <option value="5x2">5x2</option>
                 <option value="7x7">7x7</option>
+<<<<<<< HEAD
                 <option value="1x2">1x2</option>
             </select>
+=======
+                           </select>
+>>>>>>> 31e408fd6783c9ea47a7780685c526a63ab5b990
         </div>
 
         <div class="form-group">
@@ -432,17 +436,24 @@
             const filtered = data.filter(d => {
                 // Filtro por Unidad
                 if (unidadFilter !== 'ALL' && d.unidad !== unidadFilter) return false;
+<<<<<<< HEAD
 
                 // Filtro por Área
                 if (areaFilter !== 'ALL' && d.area !== areaFilter) return false;
 
                 // Filtro por Ubicación
                 if (ubicacionFilter !== 'ALL' && d.ubicacion !== ubicacionFilter) return false;
+=======
+>>>>>>> 31e408fd6783c9ea47a7780685c526a63ab5b990
                 
                 // Filtro por Año
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
                 
+<<<<<<< HEAD
                 // Filtro por Guardia
+=======
+                // Filtro por Guardia (CORREGIDO: se omite cuando es "ALL")
+>>>>>>> 31e408fd6783c9ea47a7780685c526a63ab5b990
                 if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter.toLowerCase()) return false;
                 
                 // Búsqueda por Texto
