@@ -114,6 +114,7 @@
             padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
         th {
@@ -151,8 +152,6 @@
             <label>Unidad</label>
             <select id="filterUnidad" onchange="renderAll()">
                 <option value="ALL">Todas las Unidades</option>
-                <option value="Producción">Producción</option>
-                <option value="MANTENIMIENTO">Mantenimiento</option>
             </select>
         </div>
 
@@ -202,10 +201,7 @@
             <label>Guardia</label>
             <select id="filterGuardia" onchange="renderAll()">
                 <option value="ALL">Todas las Guardias</option>
-                <option value="4x4">4x4</option>
-                <option value="5x2">5x2</option>
-                <option value="7x7">7x7</option>
-                            </select>
+            </select>
         </div>
 
         <div class="form-group">
@@ -245,6 +241,7 @@
     </div>
 
     <script>
+        // Días Feriados Nacionales (Venezuela)
         const feriados = [
             '2026-01-01', '2026-02-16', '2026-02-17', '2026-04-02', '2026-04-03', '2026-04-19', 
             '2026-05-01', '2026-06-24', '2026-07-05', '2026-07-24', '2026-10-12', '2026-12-24', 
@@ -254,6 +251,7 @@
             '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
+        // Base de datos de Personal
         const rawSource = [
             { id: 1, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 20.737.508", nombre: "LEAL VICENTE", rol: "Coordinador de Pozos", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-03-01" },
             { id: 2, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.112.864", nombre: "RODRIGUEZ RONALD", rol: "Coordinador de Estación", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "", v2027: "2027-12-13" },
@@ -327,26 +325,40 @@
 
         let chartInstance = null;
 
-        // Inicializar opciones dinámicas de los selects de Área y Ubicación
+        // Población dinámica de Selects de Filtro
         function initFilterOptions() {
+            const unidadSelect = document.getElementById('filterUnidad');
             const areaSelect = document.getElementById('filterArea');
             const ubicacionSelect = document.getElementById('filterUbicacion');
+            const guardiaSelect = document.getElementById('filterGuardia');
 
+            const uniqueUnidades = [...new Set(rawSource.map(item => item.unidad))].sort();
             const uniqueAreas = [...new Set(rawSource.map(item => item.area))].sort();
             const uniqueUbicaciones = [...new Set(rawSource.map(item => item.ubicacion))].sort();
+            const uniqueGuardias = [...new Set(rawSource.map(item => item.guardia))].sort();
 
-            uniqueAreas.forEach(area => {
-                const opt = document.createElement('option');
-                opt.value = area;
-                opt.textContent = area;
+            uniqueUnidades.forEach(u => {
+                let opt = document.createElement('option');
+                opt.value = u; opt.textContent = u;
+                unidadSelect.appendChild(opt);
+            });
+
+            uniqueAreas.forEach(a => {
+                let opt = document.createElement('option');
+                opt.value = a; opt.textContent = a;
                 areaSelect.appendChild(opt);
             });
 
-            uniqueUbicaciones.forEach(ubicacion => {
-                const opt = document.createElement('option');
-                opt.value = ubicacion;
-                opt.textContent = ubicacion;
+            uniqueUbicaciones.forEach(ub => {
+                let opt = document.createElement('option');
+                opt.value = ub; opt.textContent = ub;
                 ubicacionSelect.appendChild(opt);
+            });
+
+            uniqueGuardias.forEach(g => {
+                let opt = document.createElement('option');
+                opt.value = g; opt.textContent = g;
+                guardiaSelect.appendChild(opt);
             });
         }
 
@@ -425,28 +437,19 @@
             const yearFilter = document.getElementById('filterYear').value;
             const monthFilter = document.getElementById('filterMonth').value;
             const guardiaFilter = document.getElementById('filterGuardia').value;
-            const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
+            const searchFilter = document.getElementById('filterSearch').value.toLowerCase().trim();
 
             const filtered = data.filter(d => {
-                // Filtro por Unidad
                 if (unidadFilter !== 'ALL' && d.unidad !== unidadFilter) return false;
-
-                // Filtro por Área
                 if (areaFilter !== 'ALL' && d.area !== areaFilter) return false;
-
-                // Filtro por Ubicación
                 if (ubicacionFilter !== 'ALL' && d.ubicacion !== ubicacionFilter) return false;
-                
-                // Filtro por Año
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
-                
-                // Filtro por Guardia
                 if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter.toLowerCase()) return false;
                 
-                // Búsqueda por Texto
-                if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
+                if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) {
+                    return false;
+                }
 
-                // Filtro por Mes
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
                     let start = new Date(d.inicio + 'T00:00:00');
@@ -457,8 +460,10 @@
                     let curr = new Date(start);
                     while (curr <= end) {
                         if (curr.getMonth() === targetMonth) {
-                            overlapsMonth = true;
-                            break;
+                            if (yearFilter === 'ALL' || curr.getFullYear().toString() === yearFilter) {
+                                overlapsMonth = true;
+                                break;
+                            }
                         }
                         curr.setDate(curr.getDate() + 1);
                     }
@@ -475,6 +480,11 @@
         function renderTable(list) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; padding: 20px; color: #94a3b8;">No se encontraron registros.</td></tr>`;
+                return;
+            }
 
             list.forEach(item => {
                 let tr = document.createElement('tr');
@@ -510,7 +520,7 @@
                 ano: d.ano
             }));
 
-            const dynamicHeight = Math.max(400, chartData.length * 28);
+            const dynamicHeight = Math.max(350, chartData.length * 28);
             wrapper.style.height = `${dynamicHeight}px`;
 
             let minX = '2026-01-01';
