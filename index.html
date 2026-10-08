@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador de Vacaciones Campo Cariña (2026 - 2027)</title>
-    <!-- Chart.js & Adaptador de Fechas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <style>
@@ -114,7 +113,6 @@
             padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid var(--border);
-            white-space: nowrap;
         }
 
         th {
@@ -135,6 +133,75 @@
         }
         .tag-2026 { background: #dbeafe; color: #1e40af; }
         .tag-2027 { background: #dcfce7; color: #166534; }
+
+        /* ==========================================
+           REGLAS DE IMPRESIÓN (SIN SCROLL / SIN CORTES)
+           ========================================== */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
+            }
+
+            body {
+                background-color: white !important;
+                padding: 0 !important;
+                color: black !important;
+            }
+
+            .controls {
+                display: none !important; /* Oculta los filtros en la impresión */
+            }
+
+            .header {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background-color: #1e3a8a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .chart-container {
+                max-height: none !important;
+                overflow: visible !important;
+                page-break-inside: avoid;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            .chart-wrapper {
+                height: auto !important;
+                page-break-inside: avoid;
+            }
+
+            .table-container {
+                max-height: none !important;
+                overflow: visible !important;
+                border: none !important;
+            }
+
+            table {
+                width: 100% !important;
+                font-size: 10px !important; /* Reduce fuente para encajar columnas */
+            }
+
+            th, td {
+                padding: 4px 6px !important;
+                white-space: normal !important; /* Permite salto de línea en celdas largas */
+                word-wrap: break-word;
+            }
+
+            th {
+                position: static !important;
+                background-color: #e2e8f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            tr {
+                page-break-inside: avoid; /* Evita que una fila se corte por la mitad entre páginas */
+            }
+        }
     </style>
 </head>
 <body>
@@ -146,12 +213,13 @@
         </div>
     </div>
 
-    <!-- Filtros de Búsqueda y Consulta -->
     <div class="controls">
         <div class="form-group">
             <label>Unidad</label>
             <select id="filterUnidad" onchange="renderAll()">
                 <option value="ALL">Todas las Unidades</option>
+                <option value="Producción">Producción</option>
+                <option value="MANTENIMIENTO">Mantenimiento</option>
             </select>
         </div>
 
@@ -201,6 +269,9 @@
             <label>Guardia</label>
             <select id="filterGuardia" onchange="renderAll()">
                 <option value="ALL">Todas las Guardias</option>
+                <option value="4x4">4x4</option>
+                <option value="5x2">5x2</option>
+                <option value="7x7">7x7</option>
             </select>
         </div>
 
@@ -241,7 +312,6 @@
     </div>
 
     <script>
-        // Días Feriados Nacionales (Venezuela)
         const feriados = [
             '2026-01-01', '2026-02-16', '2026-02-17', '2026-04-02', '2026-04-03', '2026-04-19', 
             '2026-05-01', '2026-06-24', '2026-07-05', '2026-07-24', '2026-10-12', '2026-12-24', 
@@ -251,7 +321,6 @@
             '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
-        // Base de datos de Personal
         const rawSource = [
             { id: 1, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 20.737.508", nombre: "LEAL VICENTE", rol: "Coordinador de Pozos", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-03-01" },
             { id: 2, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.112.864", nombre: "RODRIGUEZ RONALD", rol: "Coordinador de Estación", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "", v2027: "2027-12-13" },
@@ -291,74 +360,59 @@
             { id: 36, unidad: "Producción", area: "Estación / Pozos", nomina: "VULCAN", cedula: "V- 8.458.648", nombre: "LEZAMA HENRY", rol: "Supervisor Campo", ubicacion: "Cariña Sur", guardia: "7x7", dias: 21, v2026: "", v2027: "2027-07-05" },
             { id: 37, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 13.611.204", nombre: "CAMPOS RAFAEL", rol: "Supervisor Campo", ubicacion: "Cariña Sur", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-12-06" },
 
-            // Mantenimiento
-            { id: 38, unidad: "Mantenimiento", area: "Electricidad", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 16.249.514", nombre: "ROJAS ELIUVY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-27", v2027: "2027-01-25" },
-            { id: 39, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 13.752.904", nombre: "SOLIS CRUZ", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-12-13" },
-            { id: 40, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 14.552.887", nombre: "MEDINA EDUYS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-11-09", v2027: "2027-05-17" },
-            { id: 41, unidad: "Mantenimiento", area: "Instrumentación", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 20.538.120", nombre: "RODRIGUEZ RONNY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-05" },
-            { id: 42, unidad: "Mantenimiento", area: "Mecánica", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 17.746.974", nombre: "AGUILERA JONANS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-08-10", v2027: "2027-08-16" },
-            { id: 43, unidad: "Mantenimiento", area: "Electricidad", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.938.836", nombre: "REYES ROMULO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-07", v2027: "2027-12-06" },
-            { id: 44, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.064.313", nombre: "GARCIA JUAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-04-20", v2027: "2027-02-15" },
-            { id: 45, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.174.940", nombre: "BRICENO MAURICIO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-27" },
-            { id: 46, unidad: "Mantenimiento", area: "Instrumentación", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 18.229.333", nombre: "TAVOY ADRIAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-13", v2027: "2027-12-13" },
-            { id: 47, unidad: "Mantenimiento", area: "Mecánica", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.497.242", nombre: "TORRES NIUMER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2027-03-08", v2027: "2027-08-16" },
-            { id: 48, unidad: "Mantenimiento", area: "Electricidad", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 11.143.072", nombre: "QUIJADA JOHN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
-            { id: 49, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 12.051.012", nombre: "ROJAS JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-08-16" },
-            { id: 50, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.227.237", nombre: "VIVAS MARCOS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
-            { id: 51, unidad: "Mantenimiento", area: "Instrumentación", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.454.011", nombre: "GARBAN JORGE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-03-01" },
-            { id: 52, unidad: "Mantenimiento", area: "Mecánica", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 17.747.170", nombre: "CEDEÑO LUIS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-03-20" },
-            { id: 53, unidad: "Mantenimiento", area: "Electricidad", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 13.157.559", nombre: "MILLAN JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-09-14", v2027: "2027-09-06" },
-            { id: 54, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 17.263.639", nombre: "SALAZAR ALCIDES", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-04-12" },
-            { id: 55, unidad: "Mantenimiento", area: "Facilidades", nomina: "GRUPO 4 VULCAN", cedula: "V- 16.077.785", nombre: "TENIAS JOHAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
-            { id: 56, unidad: "Mantenimiento", area: "Instrumentación", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.590.243", nombre: "ROMERO VICTOR", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-09-05" },
-            { id: 57, unidad: "Mantenimiento", area: "Mecánica", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.869.233", nombre: "GIL FREDDY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
-            { id: 58, unidad: "Mantenimiento", area: "Electricidad", nomina: "VULCAN", cedula: "V- 11.901.673", nombre: "HERNÁNDEZ JUAN", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2026-12-28", v2027: "2027-11-01" },
-            { id: 59, unidad: "Mantenimiento", area: "Electricidad", nomina: "VULCAN", cedula: "V- 13.696.462", nombre: "CAMACHO JACKSON", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-07-19" },
-            { id: 60, unidad: "Mantenimiento", area: "Electricidad", nomina: "VULCAN", cedula: "V- 17.786.819", nombre: "SEQUERA NOEL", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-08-09" },
-            { id: 61, unidad: "Mantenimiento", area: "Facilidades", nomina: "VULCAN", cedula: "V- 10.068.174", nombre: "QUIÑONES JOSE", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2027-01-12", v2027: "2027-12-13" },
-            { id: 62, unidad: "Mantenimiento", area: "Facilidades", nomina: "VULCAN", cedula: "V- 15.128.766", nombre: "RODRIGUEZ YAKER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2026-08-23" },
-            { id: 63, unidad: "Mantenimiento", area: "Instrumentación", nomina: "ATO PDVSA", cedula: "V- 16.396.024", nombre: "MOYA JESUS", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-07-27", v2027: "2027-07-26" },
-            { id: 64, unidad: "Mantenimiento", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 28.095.192", nombre: "FLORES ENZO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-11-22" },
-            { id: 65, unidad: "Mantenimiento", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 30.386.338", nombre: "NOE PABLO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-10-18" },
-            { id: 66, unidad: "Mantenimiento", area: "Mecánica", nomina: "ATO PDVSA", cedula: "V- 12.680.570", nombre: "PERDOMO HENRY", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-12-28", v2027: "2027-03-22" }
+            // MANTENIMIENTO
+            { id: 38, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 16.249.514", nombre: "ROJAS ELIUVY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-27", v2027: "2027-01-25" },
+            { id: 39, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 13.752.904", nombre: "SOLIS CRUZ", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-12-13" },
+            { id: 40, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 14.552.887", nombre: "MEDINA EDUYS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-11-09", v2027: "2027-05-17" },
+            { id: 41, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 20.538.120", nombre: "RODRIGUEZ RONNY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-05" },
+            { id: 42, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 17.746.974", nombre: "AGUILERA JONANS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-08-10", v2027: "2027-08-16" },
+            { id: 43, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.938.836", nombre: "REYES ROMULO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-07", v2027: "2027-12-06" },
+            { id: 44, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.064.313", nombre: "GARCIA JUAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-04-20", v2027: "2027-02-15" },
+            { id: 45, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.174.940", nombre: "BRICENO MAURICIO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-27" },
+            { id: 46, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 18.229.333", nombre: "TAVOY ADRIAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-13", v2027: "2027-12-13" },
+            { id: 47, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.497.242", nombre: "TORRES NIUMER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2027-03-08", v2027: "2027-08-16" },
+            { id: 48, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 11.143.072", nombre: "QUIJADA JOHN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
+            { id: 49, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 12.051.012", nombre: "ROJAS JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-08-16" },
+            { id: 50, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.227.237", nombre: "VIVAS MARCOS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
+            { id: 51, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.454.011", nombre: "GARBAN JORGE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-03-01" },
+            { id: 52, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 17.747.170", nombre: "CEDEÑO LUIS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-03-20" },
+            { id: 53, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 13.157.559", nombre: "MILLAN JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-09-14", v2027: "2027-09-06" },
+            { id: 54, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 17.263.639", nombre: "SALAZAR ALCIDES", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-04-12" },
+            { id: 55, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 4 VULCAN", cedula: "V- 16.077.785", nombre: "TENIAS JOHAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
+            { id: 56, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.590.243", nombre: "ROMERO VICTOR", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-09-05" },
+            { id: 57, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.869.233", nombre: "GIL FREDDY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
+            { id: 58, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 11.901.673", nombre: "HERNÁNDEZ JUAN", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2026-12-28", v2027: "2027-11-01" },
+            { id: 59, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 13.696.462", nombre: "CAMACHO JACKSON", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-07-19" },
+            { id: 60, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 17.786.819", nombre: "SEQUERA NOEL", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-08-09" },
+            { id: 61, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "VULCAN", cedula: "V- 10.068.174", nombre: "QUIÑONES JOSE", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2027-01-12", v2027: "2027-12-13" },
+            { id: 62, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "VULCAN", cedula: "V- 15.128.766", nombre: "RODRIGUEZ YAKER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2026-08-23" },
+            { id: 63, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "ATO PDVSA", cedula: "V- 16.396.024", nombre: "MOYA JESUS", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-07-27", v2027: "2027-07-26" },
+            { id: 64, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 28.095.192", nombre: "FLORES ENZO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-11-22" },
+            { id: 65, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 30.386.338", nombre: "NOE PABLO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-10-18" },
+            { id: 66, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "ATO PDVSA", cedula: "V- 12.680.570", nombre: "PERDOMO HENRY", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-12-28", v2027: "2027-03-22" }
         ];
 
         let chartInstance = null;
 
-        // Población dinámica de Selects de Filtro
         function initFilterOptions() {
-            const unidadSelect = document.getElementById('filterUnidad');
             const areaSelect = document.getElementById('filterArea');
             const ubicacionSelect = document.getElementById('filterUbicacion');
-            const guardiaSelect = document.getElementById('filterGuardia');
 
-            const uniqueUnidades = [...new Set(rawSource.map(item => item.unidad))].sort();
             const uniqueAreas = [...new Set(rawSource.map(item => item.area))].sort();
             const uniqueUbicaciones = [...new Set(rawSource.map(item => item.ubicacion))].sort();
-            const uniqueGuardias = [...new Set(rawSource.map(item => item.guardia))].sort();
 
-            uniqueUnidades.forEach(u => {
-                let opt = document.createElement('option');
-                opt.value = u; opt.textContent = u;
-                unidadSelect.appendChild(opt);
-            });
-
-            uniqueAreas.forEach(a => {
-                let opt = document.createElement('option');
-                opt.value = a; opt.textContent = a;
+            uniqueAreas.forEach(area => {
+                const opt = document.createElement('option');
+                opt.value = area;
+                opt.textContent = area;
                 areaSelect.appendChild(opt);
             });
 
-            uniqueUbicaciones.forEach(ub => {
-                let opt = document.createElement('option');
-                opt.value = ub; opt.textContent = ub;
+            uniqueUbicaciones.forEach(ubicacion => {
+                const opt = document.createElement('option');
+                opt.value = ubicacion;
+                opt.textContent = ubicacion;
                 ubicacionSelect.appendChild(opt);
-            });
-
-            uniqueGuardias.forEach(g => {
-                let opt = document.createElement('option');
-                opt.value = g; opt.textContent = g;
-                guardiaSelect.appendChild(opt);
             });
         }
 
@@ -437,7 +491,7 @@
             const yearFilter = document.getElementById('filterYear').value;
             const monthFilter = document.getElementById('filterMonth').value;
             const guardiaFilter = document.getElementById('filterGuardia').value;
-            const searchFilter = document.getElementById('filterSearch').value.toLowerCase().trim();
+            const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
 
             const filtered = data.filter(d => {
                 if (unidadFilter !== 'ALL' && d.unidad !== unidadFilter) return false;
@@ -445,10 +499,7 @@
                 if (ubicacionFilter !== 'ALL' && d.ubicacion !== ubicacionFilter) return false;
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
                 if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter.toLowerCase()) return false;
-                
-                if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) {
-                    return false;
-                }
+                if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
@@ -460,10 +511,8 @@
                     let curr = new Date(start);
                     while (curr <= end) {
                         if (curr.getMonth() === targetMonth) {
-                            if (yearFilter === 'ALL' || curr.getFullYear().toString() === yearFilter) {
-                                overlapsMonth = true;
-                                break;
-                            }
+                            overlapsMonth = true;
+                            break;
                         }
                         curr.setDate(curr.getDate() + 1);
                     }
@@ -480,11 +529,6 @@
         function renderTable(list) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; padding: 20px; color: #94a3b8;">No se encontraron registros.</td></tr>`;
-                return;
-            }
 
             list.forEach(item => {
                 let tr = document.createElement('tr');
@@ -520,7 +564,7 @@
                 ano: d.ano
             }));
 
-            const dynamicHeight = Math.max(350, chartData.length * 28);
+            const dynamicHeight = Math.max(400, chartData.length * 28);
             wrapper.style.height = `${dynamicHeight}px`;
 
             let minX = '2026-01-01';
