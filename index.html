@@ -295,7 +295,7 @@
 
         async function loadCSVAutomatic() {
             try {
-                const response = await fetch('vacaciones.csv');
+                const response = await fetch('vacaciones personal produccion.csv');
                 if (!response.ok) throw new Error('No se pudo cargar el archivo CSV');
                 const text = await response.text();
                 parseCSV(text);
