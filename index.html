@@ -45,7 +45,7 @@
             object-fit: contain;
         }
 
-        .header-text h1 { margin: 0 0 4px 0; font-size: 24px; }
+        .header-text h1 { margin: 0 0 4px 0; font-size: 22px; }
 
         .controls {
             display: flex;
@@ -135,7 +135,7 @@
         .tag-2027 { background: #dcfce7; color: #166534; }
 
         /* ==========================================
-           REGLAS DE IMPRESIÓN (SIN SCROLL / SIN CORTES)
+           REGLAS DE IMPRESIÓN (CORREGIDAS)
            ========================================== */
         @media print {
             @page {
@@ -150,7 +150,7 @@
             }
 
             .controls {
-                display: none !important; /* Oculta los filtros en la impresión */
+                display: none !important;
             }
 
             .header {
@@ -161,33 +161,23 @@
                 print-color-adjust: exact;
             }
 
-            .chart-container {
+            .chart-container, .table-container {
                 max-height: none !important;
                 overflow: visible !important;
-                page-break-inside: avoid;
-                border: none !important;
-                padding: 0 !important;
-            }
-
-            .chart-wrapper {
                 height: auto !important;
-                page-break-inside: avoid;
-            }
-
-            .table-container {
-                max-height: none !important;
-                overflow: visible !important;
                 border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
             }
 
             table {
                 width: 100% !important;
-                font-size: 10px !important; /* Reduce fuente para encajar columnas */
+                font-size: 9px !important;
             }
 
             th, td {
                 padding: 4px 6px !important;
-                white-space: normal !important; /* Permite salto de línea en celdas largas */
+                white-space: normal !important;
                 word-wrap: break-word;
             }
 
@@ -199,7 +189,8 @@
             }
 
             tr {
-                page-break-inside: avoid; /* Evita que una fila se corte por la mitad entre páginas */
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
         }
     </style>
@@ -216,43 +207,27 @@
     <div class="controls">
         <div class="form-group">
             <label>Unidad</label>
-            <select id="filterUnidad" onchange="renderAll()">
-                <option value="ALL">Todas las Unidades</option>
-                <option value="Producción">Producción</option>
-                <option value="MANTENIMIENTO">Mantenimiento</option>
-            </select>
+            <select id="filterUnidad" onchange="renderAll()"><option value="ALL">Todas las Unidades</option></select>
         </div>
 
         <div class="form-group">
             <label>Área</label>
-            <select id="filterArea" onchange="renderAll()">
-                <option value="ALL">Todas las Áreas</option>
-            </select>
+            <select id="filterArea" onchange="renderAll()"><option value="ALL">Todas las Áreas</option></select>
         </div>
 
         <div class="form-group">
             <label>Ubicación</label>
-            <select id="filterUbicacion" onchange="renderAll()">
-                <option value="ALL">Todas las Ubicaciones</option>
-            </select>
+            <select id="filterUbicacion" onchange="renderAll()"><option value="ALL">Todas las Ubicaciones</option></select>
         </div>
 
         <div class="form-group">
             <label>Filtrar por Mes</label>
             <select id="filterMonth" onchange="renderAll()">
                 <option value="ALL">Todos los Meses</option>
-                <option value="01">Enero</option>
-                <option value="02">Febrero</option>
-                <option value="03">Marzo</option>
-                <option value="04">Abril</option>
-                <option value="05">Mayo</option>
-                <option value="06">Junio</option>
-                <option value="07">Julio</option>
-                <option value="08">Agosto</option>
-                <option value="09">Septiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
+                <option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option>
+                <option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option>
+                <option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option>
+                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
             </select>
         </div>
 
@@ -260,19 +235,13 @@
             <label>Filtrar por Año</label>
             <select id="filterYear" onchange="renderAll()">
                 <option value="ALL">Todos (2026 y 2027)</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
+                <option value="2026">2026</option><option value="2027">2027</option>
             </select>
         </div>
 
         <div class="form-group">
             <label>Guardia</label>
-            <select id="filterGuardia" onchange="renderAll()">
-                <option value="ALL">Todas las Guardias</option>
-                <option value="4x4">4x4</option>
-                <option value="5x2">5x2</option>
-                <option value="7x7">7x7</option>
-            </select>
+            <select id="filterGuardia" onchange="renderAll()"><option value="ALL">Todas las Guardias</option></select>
         </div>
 
         <div class="form-group">
@@ -291,6 +260,7 @@
         <table id="dataTable">
             <thead>
                 <tr>
+                    <th>Item</th>
                     <th>Unidad / Área</th>
                     <th>Nómina</th>
                     <th>Cédula</th>
@@ -320,99 +290,101 @@
             '2027-12-25', '2027-12-31', '2028-01-01'
         ];
 
-        const rawSource = [
-            { id: 1, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 20.737.508", nombre: "LEAL VICENTE", rol: "Coordinador de Pozos", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-03-01" },
-            { id: 2, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.112.864", nombre: "RODRIGUEZ RONALD", rol: "Coordinador de Estación", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "", v2027: "2027-12-13" },
-            { id: 3, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 15.376.537", nombre: "ABREU SERGIO", rol: "Supervisor de Estación", ubicacion: "Bared-10", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-11-05" },
-            { id: 4, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 10.936.415", nombre: "URPIN ANGEL", rol: "Supervisor de Estación", ubicacion: "Bared-10", guardia: "5x2", dias: 34, v2026: "", v2027: "2027-12-06" },
-            { id: 5, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 12.439.111", nombre: "FLORES YUVER", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-02-13" },
-            { id: 6, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 15.716.639", nombre: "BARRETO JOHN", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-15" },
-            { id: 7, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 19.143.475", nombre: "CINI LINO ANDRYKSON", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-01" },
-            { id: 8, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 14.640.561", nombre: "ORDAZ FREDDY", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-08" },
-            { id: 9, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 17.746.783", nombre: "ROSAS ANGEL", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-04-12" },
-            { id: 10, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 15.877.062", nombre: "LICLI I DIOBER", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-10-04" },
-            { id: 11, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 15.846.580", nombre: "MEDINA JOSE", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-11-01" },
-            { id: 12, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 16.172.617", nombre: "GONZÁLEZ GREDOY", rol: "Operador de Estación", ubicacion: "Bared-10", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-13" },
-            { id: 13, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 14.029.707", nombre: "PEREZ RICHARD", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-01" },
-            { id: 14, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 18.228.671", nombre: "CAVADIA ZUMNURI", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-15" },
-            { id: 15, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 11.435.750", nombre: "RODRIGUEZ JESUS", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-08-02" },
-            { id: 16, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 14.082.387", nombre: "SILVA JUAN", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-11-08" },
-            { id: 17, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 12.915.160", nombre: "BELLO MANUEL", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-05" },
-            { id: 18, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 16.832.346", nombre: "URRIBARRI JORGE", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-20" },
-            { id: 19, unidad: "Producción", area: "Estaciones", nomina: "VULCAN", cedula: "V- 24.964.761", nombre: "CHÓPITE KENNEDY", rol: "Operador de Estación", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-12-20" },
-            { id: 20, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 10.068.903", nombre: "GARCIA LUIS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-01-04" },
-            { id: 21, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 14.817.977", nombre: "MORENO GREGURYS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-08" },
-            { id: 22, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 20.171.061", nombre: "FAJARDO RICKI", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-03-15" },
-            { id: 23, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 12.677.861", nombre: "MARTINEZ MARCOS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-07", v2027: "2027-05-03" },
-            { id: 24, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 12.438.753", nombre: "LEDEZMA ROSALIO", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-08-16" },
-            { id: 25, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 15.005.059", nombre: "GARCIA VICENTE", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-09-20" },
-            { id: 26, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 26.721.370", nombre: "PARRA LUIS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-06-28" },
-            { id: 27, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 8.974.303", nombre: "GÓMEZ JESÚS", rol: "Operador de Pozos", ubicacion: "Cariña Norte", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-08-02" },
-            { id: 28, unidad: "Producción", area: "Pozos", nomina: "VULCAN", cedula: "V- 26.566.685", nombre: "URBINA ALI ALDO", rol: "Supervisor Campo", ubicacion: "Cariña Norte", guardia: "7x7", dias: 21, v2026: "", v2027: "2027-05-03" },
-            { id: 29, unidad: "Producción", area: "Pozos", nomina: "ATO PDVSA", cedula: "V- 10.057.494", nombre: "MARIN YOEL", rol: "Supervisor Campo", ubicacion: "Cariña Norte", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-06-14" },
-            { id: 30, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 10.937.365", nombre: "RONDON CARLOS", rol: "Supervisor Estación", ubicacion: "Cariña Norte", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-11-01" },
-            { id: 31, unidad: "Producción", area: "Estaciones", nomina: "ATO PDVSA", cedula: "V- 18.414.421", nombre: "AGUILERA JONATHAN", rol: "Supervisor Estación", ubicacion: "Cariña Norte", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-12-13" },
-            { id: 32, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 12.015.204", nombre: "MARTINEZ MANUEL", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-02-01" },
-            { id: 33, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 12.681.204", nombre: "MOLINA SERGIO", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-03-22" },
-            { id: 34, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 15.375.920", nombre: "PEREZ JUAN", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-06-14" },
-            { id: 35, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 12.680.774", nombre: "GOMEZ CARLOS", rol: "Operador de Pozos / Campo", ubicacion: "Cariña Sur", guardia: "4x4", dias: 34, v2026: "", v2027: "2027-12-20" },
-            { id: 36, unidad: "Producción", area: "Estación / Pozos", nomina: "VULCAN", cedula: "V- 8.458.648", nombre: "LEZAMA HENRY", rol: "Supervisor Campo", ubicacion: "Cariña Sur", guardia: "7x7", dias: 21, v2026: "", v2027: "2027-07-05" },
-            { id: 37, unidad: "Producción", area: "Estación / Pozos", nomina: "ATO PDVSA", cedula: "V- 13.611.204", nombre: "CAMPOS RAFAEL", rol: "Supervisor Campo", ubicacion: "Cariña Sur", guardia: "7x7", dias: 34, v2026: "", v2027: "2027-12-06" },
-
-            // MANTENIMIENTO
-            { id: 38, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 16.249.514", nombre: "ROJAS ELIUVY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-27", v2027: "2027-01-25" },
-            { id: 39, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 13.752.904", nombre: "SOLIS CRUZ", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-12-13" },
-            { id: 40, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 14.552.887", nombre: "MEDINA EDUYS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-11-09", v2027: "2027-05-17" },
-            { id: 41, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 20.538.120", nombre: "RODRIGUEZ RONNY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2027-07-05" },
-            { id: 42, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 1 ATO PDVSA", cedula: "V- 17.746.974", nombre: "AGUILERA JONANS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-08-10", v2027: "2027-08-16" },
-            { id: 43, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.938.836", nombre: "REYES ROMULO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-07", v2027: "2027-12-06" },
-            { id: 44, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 10.064.313", nombre: "GARCIA JUAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-04-20", v2027: "2027-02-15" },
-            { id: 45, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.174.940", nombre: "BRICENO MAURICIO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-12-27" },
-            { id: 46, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 18.229.333", nombre: "TAVOY ADRIAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-13", v2027: "2027-12-13" },
-            { id: 47, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 2 ATO PDVSA", cedula: "V- 13.497.242", nombre: "TORRES NIUMER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2027-03-08", v2027: "2027-08-16" },
-            { id: 48, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 11.143.072", nombre: "QUIJADA JOHN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
-            { id: 49, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 12.051.012", nombre: "ROJAS JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-08-16" },
-            { id: 50, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.227.237", nombre: "VIVAS MARCOS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-07-19" },
-            { id: 51, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 18.454.011", nombre: "GARBAN JORGE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-21", v2027: "2027-03-01" },
-            { id: 52, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 3 ATO PDVSA", cedula: "V- 17.747.170", nombre: "CEDEÑO LUIS", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-07-20", v2027: "2027-03-20" },
-            { id: 53, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 13.157.559", nombre: "MILLAN JOSE", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-09-14", v2027: "2027-09-06" },
-            { id: 54, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 4 ATO PDVSA", cedula: "V- 17.263.639", nombre: "SALAZAR ALCIDES", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 34, v2026: "2026-12-14", v2027: "2027-04-12" },
-            { id: 55, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "GRUPO 4 VULCAN", cedula: "V- 16.077.785", nombre: "TENIAS JOHAN", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
-            { id: 56, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.590.243", nombre: "ROMERO VICTOR", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-09-05" },
-            { id: 57, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "GRUPO 4 VULCAN", cedula: "V- 17.869.233", nombre: "GIL FREDDY", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "4x4", dias: 21, v2026: "", v2027: "2026-07-12" },
-            { id: 58, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 11.901.673", nombre: "HERNÁNDEZ JUAN", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2026-12-28", v2027: "2027-11-01" },
-            { id: 59, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 13.696.462", nombre: "CAMACHO JACKSON", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-07-19" },
-            { id: 60, unidad: "MANTENIMIENTO", area: "Electricidad", nomina: "VULCAN", cedula: "V- 17.786.819", nombre: "SEQUERA NOEL", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-08-09" },
-            { id: 61, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "VULCAN", cedula: "V- 10.068.174", nombre: "QUIÑONES JOSE", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "2027-01-12", v2027: "2027-12-13" },
-            { id: 62, unidad: "MANTENIMIENTO", area: "Facilidades", nomina: "VULCAN", cedula: "V- 15.128.766", nombre: "RODRIGUEZ YAKER", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2026-08-23" },
-            { id: 63, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "ATO PDVSA", cedula: "V- 16.396.024", nombre: "MOYA JESUS", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-07-27", v2027: "2027-07-26" },
-            { id: 64, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 28.095.192", nombre: "FLORES ENZO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-11-22" },
-            { id: 65, unidad: "MANTENIMIENTO", area: "Instrumentación", nomina: "VULCAN", cedula: "V- 30.386.338", nombre: "NOE PABLO", rol: "Técnico", ubicacion: "Campo Cariña", guardia: "5x2", dias: 21, v2026: "", v2027: "2027-10-18" },
-            { id: 66, unidad: "MANTENIMIENTO", area: "Mecánica", nomina: "ATO PDVSA", cedula: "V- 12.680.570", nombre: "PERDOMO HENRY", rol: "Líder", ubicacion: "Campo Cariña", guardia: "5x2", dias: 34, v2026: "2026-12-28", v2027: "2027-03-22" }
-        ];
-
+        let rawSource = [];
         let chartInstance = null;
 
+        async function loadCSVAutomatic() {
+            try {
+                const response = await fetch('vacaciones.csv');
+                if (!response.ok) throw new Error('No se pudo cargar el archivo CSV');
+                const text = await response.text();
+                parseCSV(text);
+            } catch (error) {
+                console.error('Error al cargar el archivo CSV automáticamente:', error);
+            }
+        }
+
         function initFilterOptions() {
+            const unidadSelect = document.getElementById('filterUnidad');
             const areaSelect = document.getElementById('filterArea');
             const ubicacionSelect = document.getElementById('filterUbicacion');
+            const guardiaSelect = document.getElementById('filterGuardia');
 
+            unidadSelect.innerHTML = '<option value="ALL">Todas las Unidades</option>';
+            areaSelect.innerHTML = '<option value="ALL">Todas las Áreas</option>';
+            ubicacionSelect.innerHTML = '<option value="ALL">Todas las Ubicaciones</option>';
+            guardiaSelect.innerHTML = '<option value="ALL">Todas las Guardias</option>';
+
+            const uniqueUnidades = [...new Set(rawSource.map(item => item.unidad))].sort();
             const uniqueAreas = [...new Set(rawSource.map(item => item.area))].sort();
             const uniqueUbicaciones = [...new Set(rawSource.map(item => item.ubicacion))].sort();
+            const uniqueGuardias = [...new Set(rawSource.map(item => item.guardia))].sort();
 
-            uniqueAreas.forEach(area => {
-                const opt = document.createElement('option');
-                opt.value = area;
-                opt.textContent = area;
+            uniqueUnidades.forEach(val => {
+                let opt = document.createElement('option');
+                opt.value = val; opt.textContent = val;
+                unidadSelect.appendChild(opt);
+            });
+
+            uniqueAreas.forEach(val => {
+                let opt = document.createElement('option');
+                opt.value = val; opt.textContent = val;
                 areaSelect.appendChild(opt);
             });
 
-            uniqueUbicaciones.forEach(ubicacion => {
-                const opt = document.createElement('option');
-                opt.value = ubicacion;
-                opt.textContent = ubicacion;
+            uniqueUbicaciones.forEach(val => {
+                let opt = document.createElement('option');
+                opt.value = val; opt.textContent = val;
                 ubicacionSelect.appendChild(opt);
             });
+
+            uniqueGuardias.forEach(val => {
+                let opt = document.createElement('option');
+                opt.value = val; opt.textContent = val;
+                guardiaSelect.appendChild(opt);
+            });
+        }
+
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/);
+            if (lines.length < 2) return;
+
+            const header = lines[0];
+            const delimiter = header.includes(';') ? ';' : ',';
+
+            let newSource = [];
+            for (let i = 1; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line) continue;
+
+                let cols = line.split(delimiter);
+                if (cols.length >= 11) {
+                    let grupo = cols[3] ? cols[3].trim() : '';
+                    let nominaBase = cols[4] ? cols[4].trim() : '';
+                    let nominaFull = grupo ? `${grupo} ${nominaBase}` : nominaBase;
+
+                    newSource.push({
+                        id: parseInt(cols[0]) || i,
+                        unidad: cols[1] ? cols[1].trim() : '',
+                        area: cols[2] ? cols[2].trim() : '',
+                        nomina: nominaFull,
+                        cedula: cols[5] ? cols[5].trim() : '',
+                        nombre: cols[6] ? cols[6].trim() : '',
+                        rol: cols[7] ? cols[7].trim() : '',
+                        ubicacion: cols[8] ? cols[8].trim() : '',
+                        guardia: cols[9] ? cols[9].trim() : '',
+                        dias: parseInt(cols[10]) || 21,
+                        v2026: cols[11] ? cols[11].trim() : '',
+                        v2027: cols[12] ? cols[12].trim() : ''
+                    });
+                }
+            }
+
+            if (newSource.length > 0) {
+                rawSource = newSource;
+                initFilterOptions();
+                renderAll();
+            }
         }
 
         function calculateVacations(dateStr, days, is5x2) {
@@ -453,7 +425,7 @@
         function calculateAllData() {
             let processed = [];
             rawSource.forEach(item => {
-                let is5x2 = item.guardia.toLowerCase() === '5x2';
+                let is5x2 = item.guardia.toLowerCase().includes('5x2');
 
                 if (item.v2026) {
                     let calc2026 = calculateVacations(item.v2026, item.dias, is5x2);
@@ -497,7 +469,7 @@
                 if (areaFilter !== 'ALL' && d.area !== areaFilter) return false;
                 if (ubicacionFilter !== 'ALL' && d.ubicacion !== ubicacionFilter) return false;
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
-                if (guardiaFilter !== 'ALL' && d.guardia.toLowerCase() !== guardiaFilter.toLowerCase()) return false;
+                if (guardiaFilter !== 'ALL' && d.guardia.toUpperCase() !== guardiaFilter.toUpperCase()) return false;
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
 
                 if (monthFilter !== 'ALL') {
@@ -535,7 +507,7 @@
                     <td>${item.id}</td>
                     <td><strong>${item.unidad}</strong><br><small style="color:#64748b">${item.area}</small></td>
                     <td>${item.nomina}</td>
-                    <td>${item.cedula}</td>
+                    <td>${item.cedula || 'N/A'}</td>
                     <td><strong>${item.nombre}</strong></td>
                     <td>${item.rol}</td>
                     <td>${item.ubicacion}</td>
@@ -642,9 +614,9 @@
             });
         }
 
-        window.onload = function() {
-            initFilterOptions();
-            renderAll();
+        window.onload = async function() {
+            await loadCSVAutomatic();
         };
     </script>
 </body>
+</html>
