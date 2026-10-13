@@ -298,11 +298,7 @@
                 const response = await fetch('vacaciones personal produccion.csv');
                 if (!response.ok) throw new Error('No se pudo cargar el archivo CSV');
                 
-                // Lee el archivo como buffer binario para respetar acentos y la eñe (ñ)
-                const buffer = await response.arrayBuffer();
-                const decoder = new TextDecoder('iso-8859-1');
-                const text = decoder.decode(buffer);
-                
+                const text = await response.text();
                 parseCSV(text);
             } catch (error) {
                 console.error('Error al cargar el archivo CSV automáticamente:', error);
