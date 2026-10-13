@@ -65,10 +65,19 @@
 64;Mantenimiento;Instrumentación;;VULCAN;V- 28,095,192;FLORES ENZO;Técnico;Campo Cariña;5x2;21;;2027-11-22
 65;Mantenimiento;Instrumentación;;VULCAN;V- 30,386,338;NOE PABLO;Técnico;Campo Cariña;5x2;21;;2027-10-18
 66;Mantenimiento;Mecánica;;ATO PDVSA;V- 12,680,570;PERDOMO HENRRY;Líder;Campo Cariña;5x2;34;2026-12-28;2027-03-22
-67;Ingenieria de Producción;Oficina;;VULCAN;;VASQUEZ ROGER;Lider Ingenieria de Producción;El Tigre;5x2;21;;2027-12-13
-68;Ingenieria de Producción;Pozos;;ATO PDVSA;;MOYA ANDREINA;Ingeniero de Producción;Campo Cariña;5x2;34;;2027-07-19
-69;Ingenieria de Producción;Pozos;;VULCAN;;AVILA ADOLFO;Ingeniero de Producción;Campo Cariña;5x2;21;;2027-09-20
-70;Ingenieria de Producción;Pozos;;VULCAN;;SILVERA JOSE;Tecnico Opt. de Producción;Campo Cariña;5x2;21;;2027-01-04
-71;Ingenieria de Producción;Pozos;;ATO PDVSA;;GUEVARA LUIS;Tecnico Opt. de Producción;Campo Cariña;5x2;34;;2027-08-16
-72;Tratamiento de Quimica;Oficina;;VULCAN;;RAMON GUARISMA;Lider Tratamiento Quimico;El Tigre;5x2;21;;2027-06-21
-73;Tratamiento de Quimica;Estación / Pozos;;VULCAN;;CARLOS MATA;Analista Quimico;Campo Cariña;5x2;21;;2027-07-19
+67;Ingenieria de Producción;Oficina;;VULCAN;V- 14,317,216;VASQUEZ ROGER;Jefe de Ingeniería de Producción;El Tigre;5x2;21;;2027-12-13
+68;Ingenieria de Producción;Pozos;;ATO PDVSA;V- 18,886,331;MOYA ANDREINA;Ingeniero de Optimización;Campo Cariña;5x2;34;;2027-07-19
+69;Ingenieria de Producción;Pozos;;VULCAN;V- 21,196,997;AVILA ADOLFO;Ingeniero de Optimización;Campo Cariña;5x2;21;;2027-09-20
+70;Ingenieria de Producción;Pozos;;VULCAN;V- 24,239,120;SILVERA JOSE;Tecnico de Optimización;Campo Cariña;5x2;21;;2027-01-04
+71;Ingenieria de Producción;Pozos;;ATO PDVSA;V- 16,250,266;GUEVARA LUIS;Tecnico de Optimización;Campo Cariña;5x2;34;;2027-08-16
+72;Tratamiento de Quimica;Oficina;;VULCAN;V- 8,470,087;RAMON GUARISMA;Ingeniero Químico;El Tigre;5x2;21;;2027-06-21
+73;Tratamiento de Quimica;Estación / Pozos;;VULCAN;V- 19,346,504;CARLOS MATA;Analista de Laboratorio;Campo Cariña;5x2;21;;2027-07-19
+74;Servicios a Pozos;Pozos;;VULCAN;V- 19,168,636;NIEVES FREDDY;COORDINADOR DE WORKOVER - WELL SERVICES;Campo Cariña;;21;;
+75;Servicios a Pozos;Pozos;;VULCAN;V- 17,592,636;GONZÁLEZ CÉSAR;SUPERVISOR DE WORKOVER - WELL SERVICES;Campo Cariña;;21;;
+76;Servicios a Pozos;Pozos;;VULCAN;V- 16,077,476;PERALES WUILMER;COMPANY MAN;Campo Cariña;;21;;
+77;Servicios a Pozos;Pozos;;VULCAN;V- 15,672,953;OLIVARES JESÚS;COMPANY MAN;Campo Cariña;;21;;
+78;Servicios a Pozos;Pozos;;VULCAN;V- 8,966,748;VERACIERTA LORENZO;COMPANY MAN;Campo Cariña;;21;;
+79;Servicios a Pozos;Pozos;;VULCAN;V- 17,404,423;ROMERO PEDRO;COMPANY MAN;Campo Cariña;;21;;
+80;Servicios a Pozos;Pozos;;VULCAN;V- 18,983,177;PATETE WILFREDO ;COMPANY MAN;Campo Cariña;;21;;
+81;Servicios a Pozos;Pozos;;ATO PDVSA;V- 18,371,774;BONILLA ENDYS;Company Man;Campo Cariña;;34;;2027-08-02
+82;Servicios a Pozos;Pozos;;ATO PDVSA;V- 13,165,094;CARAGUICHE EMIL;Company Man;Campo Cariña;;34;;2027-04-05
