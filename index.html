@@ -6,7 +6,7 @@
     <title>Planificador de Vacaciones Campo Cariña (2026 - 2027)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <!-- Librería html2pdf para la exportación a PDF en tamaño carta -->
+    <!-- Librería html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -129,12 +129,14 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
+            table-layout: auto;
         }
 
         th, td {
             padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
 
         th {
@@ -157,58 +159,42 @@
         .tag-2027 { background: #dcfce7; color: #166534; }
 
         /* ==========================================
-           REGLAS DE IMPRESIÓN / PDF
+           ESTILOS ESPECÍFICOS PARA MODO EXPORTACIÓN PDF
            ========================================== */
-        @media print {
-            body {
-                background-color: white !important;
-                padding: 0 !important;
-                color: black !important;
-            }
+        .rendering-pdf {
+            width: 1100px !important; /* Forzar ancho amplio tipo paisaje Carta */
+            background-color: white !important;
+        }
 
-            .controls {
-                display: none !important;
-            }
+        .rendering-pdf .table-container,
+        .rendering-pdf .chart-container {
+            max-height: none !important;
+            overflow: visible !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
 
-            .header {
-                box-shadow: none !important;
-                border: 1px solid #ccc !important;
-                background-color: #1e3a8a !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
+        .rendering-pdf table {
+            width: 100% !important;
+            font-size: 10px !important;
+        }
 
-            .chart-container, .table-container {
-                max-height: none !important;
-                overflow: visible !important;
-                height: auto !important;
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
-            }
+        .rendering-pdf th, 
+        .rendering-pdf td {
+            padding: 5px 6px !important;
+            white-space: nowrap !important; /* Previene solapamientos horizontales */
+            font-size: 10px !important;
+        }
 
-            table {
-                width: 100% !important;
-                font-size: 9px !important;
-            }
+        .rendering-pdf th {
+            position: static !important;
+            background-color: #e2e8f0 !important;
+        }
 
-            th, td {
-                padding: 4px 6px !important;
-                white-space: normal !important;
-                word-wrap: break-word;
-            }
-
-            th {
-                position: static !important;
-                background-color: #e2e8f0 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            tr {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-            }
+        .rendering-pdf tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
     </style>
 </head>
@@ -631,4 +617,52 @@
                             callbacks: {
                                 label: function(context) {
                                     let raw = context.raw;
-                                    return
+                                    return `Período: ${raw.x[0]} al ${raw.x[1]}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Función ajustada para evitar la superposición de texto en el PDF
+        function exportarPDF() {
+            const element = document.getElementById('pdfArea');
+            const controls = document.querySelector('.controls');
+
+            // 1. Ocultar controles de filtrado
+            controls.style.display = 'none';
+
+            // 2. Aplicar clase especial para renderizado sin solapamientos
+            element.classList.add('rendering-pdf');
+
+            const opt = {
+                margin:       [8, 8, 8, 8],
+                filename:     'Cronograma_Vacaciones.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    windowWidth: 1200 
+                },
+                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'landscape' }
+            };
+
+            // 3. Generar PDF y restaurar estilos de la página
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.classList.remove('rendering-pdf');
+                controls.style.display = 'flex';
+            }).catch(err => {
+                element.classList.remove('rendering-pdf');
+                controls.style.display = 'flex';
+                console.error("Error al generar PDF:", err);
+            });
+        }
+
+        window.onload = async function() {
+            await loadCSVAutomatic();
+        };
+    </script>
+</body>
+</html>
