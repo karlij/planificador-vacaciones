@@ -30,12 +30,12 @@ ITEM;UNIDAD;Area;Grupo;NOMINA;CEDULA;APELLIDO Y NOMBRE;ROL;Ubicación;GUARDIA;di
 29;Producción;Pozos;;ATO PDVSA;V- 10,057,494;MARIN YOEL;Supervisor Campo;Cariña Norte;7x7;34;;2027-06-14
 30;Producción;Estaciones;;ATO PDVSA;V- 10,937,395;RONDON CARLOS;Supervisor Estación;Cariña Norte;7x7;34;;2027-11-01
 31;Producción;Estaciones;;ATO PDVSA;V- 18,414,421;AGUILERA JONATHAN;Supervisor Estación;Cariña Norte;7x7;34;;2027-12-13
-32;Producción;Estación / Pozos;;ATO PDVSA;V- 12,015,264;MARTINEZ MANUEL;Operador de Pozos Campo;Cariña Sur;4x4;34;;2027-01-04
-33;Producción;Estación / Pozos;;ATO PDVSA;V- 12,681,284;MOLINA SERGIO;Operador de Pozos Campo;Cariña Sur;4x4;34;2026-12-21;2027-06-07
-34;Producción;Estación / Pozos;;ATO PDVSA;V- 15,375,908;PEREZ JUAN;Operador de Pozos Campo;Cariña Sur;4x4;34;;2027-03-01
-35;Producción;Estación / Pozos;;ATO PDVSA;V- 12,680,774;GOMEZ CARLOS;Operador de Pozos Campo;Cariña Sur;4x4;34;;2027-12-06
-36;Producción;Estación / Pozos;;VULCAN;V- 8,458,648;LEZAMA HENRRY;Supervisor Campo;Cariña Sur;7x7;21;;2027-07-05
-37;Producción;Estación / Pozos;;ATO PDVSA;V- 13,611,204;CAMPOS RAFAEL;Supervisor Campo;Cariña Sur;7x7;34;;2027-12-06
+32;Producción;Estación/Pozos;;ATO PDVSA;V- 12,015,264;MARTINEZ MANUEL;Operador de Pozos Campo;Cariña Sur;4x4;34;;2027-01-04
+33;Producción;Estación/Pozos;;ATO PDVSA;V- 12,681,284;MOLINA SERGIO;Operador de Pozos Campo;Cariña Sur;4x4;34;2026-12-21;2027-06-07
+34;Producción;Estación/Pozos;;ATO PDVSA;V- 15,375,908;PEREZ JUAN;Operador de Pozos Campo;Cariña Sur;4x4;34;;2027-03-01
+35;Producción;Estación/Pozos;;ATO PDVSA;V- 12,680,774;GOMEZ CARLOS;Operador de Pozos Campo;Cariña Sur;4x4;34;;2027-12-06
+36;Producción;Estación/Pozos;;VULCAN;V- 8,458,648;LEZAMA HENRRY;Supervisor Campo;Cariña Sur;7x7;21;;2027-07-05
+37;Producción;Estación/Pozos;;ATO PDVSA;V- 13,611,204;CAMPOS RAFAEL;Supervisor Campo;Cariña Sur;7x7;34;;2027-12-06
 38;Mantenimiento;Electricidad;GRUPO 1;ATO PDVSA;V- 16,249,514;ROJAS ELIUVY;Técnico;Campo Cariña;4X4;34;2026-07-27;2027-01-25
 39;Mantenimiento;Facilidades;GRUPO 1;ATO PDVSA;V- 13,752,904;SOLIS CRUZ;Técnico;Campo Cariña;4X4;34;2026-12-14;2026-12-13
 40;Mantenimiento;Facilidades;GRUPO 1;ATO PDVSA;V- 14,552,887;MEDINA EDUYS;Técnico;Campo Cariña;4X4;34;2026-11-09;2027-05-17
@@ -71,4 +71,4 @@ ITEM;UNIDAD;Area;Grupo;NOMINA;CEDULA;APELLIDO Y NOMBRE;ROL;Ubicación;GUARDIA;di
 70;Ingenieria de Producción;Pozos;;VULCAN;;SILVERA JOSE;Tecnico Opt. de Producción;Campo Cariña;5X2;21;;2027-01-04
 71;Ingenieria de Producción;Pozos;;ATO PDVSA;;GUEVARA LUIS;Tecnico Opt. de Producción;Campo Cariña;5X2;34;;2027-08-16
 72;Tratamiento de Quimica;Oficina;;VULCAN;;RAMON GUARISMA;Lider Tratamiento Quimico;El Tigre;5x2;21;;2027-06-21
-73;Tratamiento de Quimica;Estaciones / Pozos;;VULCAN;;CARLOS
+73;Tratamiento de Quimica;Estación/Pozos;;VULCAN;;CARLOS
