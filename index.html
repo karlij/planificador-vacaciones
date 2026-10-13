@@ -6,6 +6,8 @@
     <title>Planificador de Vacaciones Campo Cariña (2026 - 2027)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <!-- Librería html2pdf para la exportación a PDF en tamaño carta -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -56,6 +58,7 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             margin-bottom: 20px;
+            align-items: flex-end;
         }
 
         .form-group {
@@ -76,6 +79,25 @@
             border-radius: 6px;
             font-size: 13px;
             outline: none;
+        }
+
+        .btn-pdf {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-pdf:hover {
+            background-color: #b91c1c;
         }
 
         .chart-container {
@@ -135,14 +157,9 @@
         .tag-2027 { background: #dcfce7; color: #166534; }
 
         /* ==========================================
-           REGLAS DE IMPRESIÓN (CORREGIDAS)
+           REGLAS DE IMPRESIÓN / PDF
            ========================================== */
         @media print {
-            @page {
-                size: A4 landscape;
-                margin: 10mm;
-            }
-
             body {
                 background-color: white !important;
                 padding: 0 !important;
@@ -197,87 +214,95 @@
 </head>
 <body>
 
-    <div class="header">
-        <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
-        <div class="header-text">
-            <h1>Cronograma de Vacaciones Gerencia de Operaciones (2026 - 2027)</h1>
-        </div>
-    </div>
-
-    <div class="controls">
-        <div class="form-group">
-            <label>Unidad</label>
-            <select id="filterUnidad" onchange="renderAll()"><option value="ALL">Todas las Unidades</option></select>
+    <div id="pdfArea">
+        <div class="header">
+            <img src="logo.png" alt="Logo Empresa" onerror="this.style.display='none'">
+            <div class="header-text">
+                <h1>Cronograma de Vacaciones Gerencia de Operaciones (2026 - 2027)</h1>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Área</label>
-            <select id="filterArea" onchange="renderAll()"><option value="ALL">Todas las Áreas</option></select>
+        <div class="controls">
+            <div class="form-group">
+                <label>Unidad</label>
+                <select id="filterUnidad" onchange="renderAll()"><option value="ALL">Todas las Unidades</option></select>
+            </div>
+
+            <div class="form-group">
+                <label>Área</label>
+                <select id="filterArea" onchange="renderAll()"><option value="ALL">Todas las Áreas</option></select>
+            </div>
+
+            <div class="form-group">
+                <label>Ubicación</label>
+                <select id="filterUbicacion" onchange="renderAll()"><option value="ALL">Todas las Ubicaciones</option></select>
+            </div>
+
+            <div class="form-group">
+                <label>Filtrar por Mes</label>
+                <select id="filterMonth" onchange="renderAll()">
+                    <option value="ALL">Todos los Meses</option>
+                    <option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option>
+                    <option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option>
+                    <option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option>
+                    <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Filtrar por Año</label>
+                <select id="filterYear" onchange="renderAll()">
+                    <option value="ALL">Todos (2026 y 2027)</option>
+                    <option value="2026">2026</option><option value="2027">2027</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Guardia</label>
+                <select id="filterGuardia" onchange="renderAll()"><option value="ALL">Todas las Guardias</option></select>
+            </div>
+
+            <div class="form-group">
+                <label>Buscar Trabajador</label>
+                <input type="text" id="filterSearch" placeholder="Nombre o Cédula..." oninput="renderAll()">
+            </div>
+
+            <div class="form-group">
+                <button class="btn-pdf" onclick="exportarPDF()">
+                    📄 Descargar PDF (Carta)
+                </button>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Ubicación</label>
-            <select id="filterUbicacion" onchange="renderAll()"><option value="ALL">Todas las Ubicaciones</option></select>
+        <div class="chart-container">
+            <div id="chartWrapper" class="chart-wrapper">
+                <canvas id="ganttChart"></canvas>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Filtrar por Mes</label>
-            <select id="filterMonth" onchange="renderAll()">
-                <option value="ALL">Todos los Meses</option>
-                <option value="01">Enero</option><option value="02">Febrero</option><option value="03">Marzo</option>
-                <option value="04">Abril</option><option value="05">Mayo</option><option value="06">Junio</option>
-                <option value="07">Julio</option><option value="08">Agosto</option><option value="09">Septiembre</option>
-                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-            </select>
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Unidad / Área</th>
+                        <th>Nómina</th>
+                        <th>Cédula</th>
+                        <th>Trabajador</th>
+                        <th>Rol</th>
+                        <th>Ubicación</th>
+                        <th>Guardia</th>
+                        <th>Días Vac.</th>
+                        <th>Año</th>
+                        <th>Fecha Inicio</th>
+                        <th>Feriados</th>
+                        <th>Fecha Fin</th>
+                        <th>Reincorporación</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
-
-        <div class="form-group">
-            <label>Filtrar por Año</label>
-            <select id="filterYear" onchange="renderAll()">
-                <option value="ALL">Todos (2026 y 2027)</option>
-                <option value="2026">2026</option><option value="2027">2027</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Guardia</label>
-            <select id="filterGuardia" onchange="renderAll()"><option value="ALL">Todas las Guardias</option></select>
-        </div>
-
-        <div class="form-group">
-            <label>Buscar Trabajador</label>
-            <input type="text" id="filterSearch" placeholder="Nombre o Cédula..." oninput="renderAll()">
-        </div>
-    </div>
-
-    <div class="chart-container">
-        <div id="chartWrapper" class="chart-wrapper">
-            <canvas id="ganttChart"></canvas>
-        </div>
-    </div>
-
-    <div class="table-container">
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Unidad / Área</th>
-                    <th>Nómina</th>
-                    <th>Cédula</th>
-                    <th>Trabajador</th>
-                    <th>Rol</th>
-                    <th>Ubicación</th>
-                    <th>Guardia</th>
-                    <th>Días Vac.</th>
-                    <th>Año</th>
-                    <th>Fecha Inicio</th>
-                    <th>Feriados</th>
-                    <th>Fecha Fin</th>
-                    <th>Reincorporación</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
     </div>
 
     <script>
@@ -606,18 +631,4 @@
                             callbacks: {
                                 label: function(context) {
                                     let raw = context.raw;
-                                    return `Período: ${raw.x[0]} al ${raw.x[1]}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        window.onload = async function() {
-            await loadCSVAutomatic();
-        };
-    </script>
-</body>
-</html>
+                                    return
