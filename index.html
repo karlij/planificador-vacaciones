@@ -307,6 +307,17 @@
             <select id="filterGuardia" onchange="renderAll()"><option value="ALL">Todas las Guardias</option></select>
         </div>
 
+        <!-- Nuevos filtros de rango de fechas -->
+        <div class="form-group">
+            <label>Fecha Desde</label>
+            <input type="date" id="filterDateFrom" onchange="renderAll()">
+        </div>
+
+        <div class="form-group">
+            <label>Fecha Hasta</label>
+            <input type="date" id="filterDateTo" onchange="renderAll()">
+        </div>
+
         <div class="form-group">
             <label>Buscar Trabajador</label>
             <input type="text" id="filterSearch" placeholder="Nombre o Cédula..." oninput="renderAll()">
@@ -553,7 +564,7 @@
             return processed;
         }
 
-        function updateFilterBanner(unidad, area, ubicacion, month, year, guardia, search) {
+        function updateFilterBanner(unidad, area, ubicacion, month, year, guardia, dateFrom, dateTo, search) {
             const banner = document.getElementById('activeFiltersBanner');
             const monthNames = {
                 'ALL': 'Todos', '01': 'Enero', '02': 'Febrero', '03': 'Marzo',
@@ -561,6 +572,11 @@
                 '08': 'Agosto', '09': 'Septiembre', '10': 'Octubre',
                 '11': 'Noviembre', '12': 'Diciembre'
             };
+
+            let rangeText = '';
+            if (dateFrom || dateTo) {
+                rangeText = `<span>Rango: <span class="filter-tag">${dateFrom || 'Inicio'} al ${dateTo || 'Fin'}</span></span>`;
+            }
 
             banner.innerHTML = `
                 <span>🔍 <strong>Filtros Aplicados:</strong></span>
@@ -570,6 +586,7 @@
                 <span>Mes: <span class="filter-tag">${monthNames[month] || month}</span></span>
                 <span>Año: <span class="filter-tag">${year}</span></span>
                 <span>Guardia: <span class="filter-tag">${guardia}</span></span>
+                ${rangeText}
                 ${search ? `<span>Búsqueda: <span class="filter-tag">"${search}"</span></span>` : ''}
             `;
         }
@@ -581,9 +598,11 @@
             const yearFilter = document.getElementById('filterYear').value;
             const monthFilter = document.getElementById('filterMonth').value;
             const guardiaFilter = document.getElementById('filterGuardia').value;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
             const searchFilter = document.getElementById('filterSearch').value.trim();
 
-            updateFilterBanner(unidadFilter, areaFilter, ubicacionFilter, monthFilter, yearFilter, guardiaFilter, searchFilter);
+            updateFilterBanner(unidadFilter, areaFilter, ubicacionFilter, monthFilter, yearFilter, guardiaFilter, dateFrom, dateTo, searchFilter);
 
             const data = calculateAllData();
             const filtered = data.filter(d => {
@@ -594,6 +613,17 @@
                 if (guardiaFilter !== 'ALL' && d.guardia.toUpperCase() !== guardiaFilter.toUpperCase()) return false;
                 if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter.toLowerCase()) && !d.cedula.toLowerCase().includes(searchFilter.toLowerCase())) return false;
 
+                // Filtro por Rango de Fechas (Desde / Hasta)
+                if (dateFrom || dateTo) {
+                    if (!d.inicio || !d.fin) return false;
+                    let vacStart = d.inicio;
+                    let vacEnd = d.fin;
+
+                    if (dateFrom && vacEnd < dateFrom) return false;
+                    if (dateTo && vacStart > dateTo) return false;
+                }
+
+                // Filtro por Mes
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
                     let start = new Date(d.inicio + 'T00:00:00');
@@ -616,7 +646,7 @@
             });
 
             renderTable(filtered);
-            renderChart(filtered, yearFilter, monthFilter);
+            renderChart(filtered, yearFilter, monthFilter, dateFrom, dateTo);
         }
 
         function renderTable(list) {
@@ -645,7 +675,7 @@
             });
         }
 
-        function renderChart(list, yearFilter, monthFilter) {
+        function renderChart(list, yearFilter, monthFilter, dateFrom, dateTo) {
             const ctx = document.getElementById('ganttChart').getContext('2d');
             const wrapper = document.getElementById('chartWrapper');
 
@@ -656,19 +686,21 @@
             let timeUnit = 'month';
             let displayFormat = { month: 'MMM yyyy' };
 
-            // Determinar minX y maxX de la ventana visible
-            if (monthFilter !== 'ALL') {
+            // Si hay un rango de fechas personalizado, ajustar los límites del eje X
+            if (dateFrom || dateTo) {
+                timeUnit = 'day';
+                displayFormat = { day: 'dd MMM yyyy' };
+                if (dateFrom) minX = dateFrom;
+                if (dateTo) maxX = dateTo;
+            } else if (monthFilter !== 'ALL') {
                 timeUnit = 'day';
                 displayFormat = { day: 'dd MMM' };
 
                 let targetMonthInt = parseInt(monthFilter);
-                
-                // Determinar el año relevante para el mes seleccionado
                 let targetYear = 2027;
                 if (yearFilter !== 'ALL') {
                     targetYear = parseInt(yearFilter);
                 } else if (list.length > 0) {
-                    // Si hay registros, determinar el año en el que ocurren en ese mes
                     let targetItem = list.find(d => {
                         let s = new Date(d.inicio + 'T00:00:00');
                         let e = new Date(d.fin + 'T00:00:00');
@@ -693,11 +725,8 @@
                     }
                 }
 
-                let startOfMonth = new Date(targetYear, targetMonthInt - 1, 1);
-                let endOfMonth = new Date(targetYear, targetMonthInt, 0);
-
-                minX = startOfMonth.toISOString().split('T')[0];
-                maxX = endOfMonth.toISOString().split('T')[0];
+                minX = new Date(targetYear, targetMonthInt - 1, 1).toISOString().split('T')[0];
+                maxX = new Date(targetYear, targetMonthInt, 0).toISOString().split('T')[0];
             } else if (yearFilter === '2026') {
                 minX = '2026-01-01';
                 maxX = '2026-12-31';
@@ -706,7 +735,6 @@
                 maxX = '2027-12-31';
             }
 
-            // Preparar los datos acotando (clamping) las fechas para que Chart.js dibuje las barras
             const chartData = list.filter(d => d.inicio && d.fin).map(d => {
                 let visibleStart = d.inicio < minX ? minX : d.inicio;
                 let visibleEnd = d.fin > maxX ? maxX : d.fin;
@@ -750,7 +778,7 @@
                             },
                             min: minX,
                             max: maxX,
-                            title: { display: true, text: monthFilter !== 'ALL' ? 'Días del Mes' : 'Línea del Tiempo' }
+                            title: { display: true, text: (monthFilter !== 'ALL' || dateFrom || dateTo) ? 'Línea de Tiempo (Rango)' : 'Línea del Tiempo' }
                         },
                         y: {
                             ticks: { 
