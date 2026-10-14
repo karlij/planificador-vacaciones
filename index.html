@@ -47,7 +47,6 @@
 
         .header-text h1 { margin: 0 0 4px 0; font-size: 22px; }
 
-        /* Barra de resumen de filtros activos */
         .active-filters-banner {
             background-color: #eff6ff;
             border: 1px solid #bfdbfe;
@@ -62,9 +61,7 @@
             align-items: center;
         }
 
-        .active-filters-banner strong {
-            color: #1e3a8a;
-        }
+        .active-filters-banner strong { color: #1e3a8a; }
 
         .filter-tag {
             background: #dbeafe;
@@ -120,9 +117,7 @@
             gap: 6px;
         }
 
-        .btn-pdf:hover {
-            background-color: #b91c1c;
-        }
+        .btn-pdf:hover { background-color: #b91c1c; }
 
         .chart-container {
             background: var(--card-bg);
@@ -181,7 +176,6 @@
         .tag-2026 { background: #dbeafe; color: #1e40af; }
         .tag-2027 { background: #dcfce7; color: #166534; }
 
-        /* Footer institucional */
         .footer {
             text-align: center;
             padding: 15px;
@@ -191,9 +185,6 @@
             margin-top: 20px;
         }
 
-        /* ==========================================
-           REGLAS DE IMPRESIÓN / PDF PERFECTAS
-           ========================================== */
         @media print {
             @page {
                 size: letter landscape;
@@ -206,9 +197,7 @@
                 color: black !important;
             }
 
-            .controls {
-                display: none !important;
-            }
+            .controls { display: none !important; }
 
             .header {
                 box-shadow: none !important;
@@ -261,9 +250,7 @@
                 break-inside: avoid !important;
             }
 
-            .footer {
-                border-top: 1px solid #ccc !important;
-            }
+            .footer { border-top: 1px solid #ccc !important; }
         }
     </style>
 </head>
@@ -276,7 +263,6 @@
         </div>
     </div>
 
-    <!-- Banner con los filtros aplicados -->
     <div class="active-filters-banner" id="activeFiltersBanner">
         <span>🔍 <strong>Filtros Aplicados:</strong> Cargando...</span>
     </div>
@@ -475,7 +461,6 @@
             }
         }
 
-        // Lógica de cálculo de vacaciones con extensión automática por feriados nacionales
         function calculateVacations(dateStr, days, is5x2) {
             if (!dateStr) return { fin: '', reinc: '', feriadosCount: 0 };
 
@@ -666,26 +651,47 @@
 
             if (chartInstance) chartInstance.destroy();
 
-            const chartData = list.filter(d => d.inicio && d.fin).map(d => ({
-                x: [d.inicio, d.fin],
-                y: `${d.nombre} (${d.ano})`,
-                ano: d.ano
-            }));
-
-            const dynamicHeight = Math.max(400, chartData.length * 28);
-            wrapper.style.height = `${dynamicHeight}px`;
-
             let minX = '2026-01-01';
             let maxX = '2027-12-31';
             let timeUnit = 'month';
             let displayFormat = { month: 'MMM yyyy' };
 
+            // Determinar minX y maxX de la ventana visible
             if (monthFilter !== 'ALL') {
                 timeUnit = 'day';
                 displayFormat = { day: 'dd MMM' };
 
-                let targetYear = (yearFilter !== 'ALL') ? parseInt(yearFilter) : 2027;
                 let targetMonthInt = parseInt(monthFilter);
+                
+                // Determinar el año relevante para el mes seleccionado
+                let targetYear = 2027;
+                if (yearFilter !== 'ALL') {
+                    targetYear = parseInt(yearFilter);
+                } else if (list.length > 0) {
+                    // Si hay registros, determinar el año en el que ocurren en ese mes
+                    let targetItem = list.find(d => {
+                        let s = new Date(d.inicio + 'T00:00:00');
+                        let e = new Date(d.fin + 'T00:00:00');
+                        let c = new Date(s);
+                        while (c <= e) {
+                            if (c.getMonth() === targetMonthInt - 1) return true;
+                            c.setDate(c.getDate() + 1);
+                        }
+                        return false;
+                    });
+                    if (targetItem) {
+                        let s = new Date(targetItem.inicio + 'T00:00:00');
+                        let e = new Date(targetItem.fin + 'T00:00:00');
+                        let c = new Date(s);
+                        while (c <= e) {
+                            if (c.getMonth() === targetMonthInt - 1) {
+                                targetYear = c.getFullYear();
+                                break;
+                            }
+                            c.setDate(c.getDate() + 1);
+                        }
+                    }
+                }
 
                 let startOfMonth = new Date(targetYear, targetMonthInt - 1, 1);
                 let endOfMonth = new Date(targetYear, targetMonthInt, 0);
@@ -699,6 +705,23 @@
                 minX = '2027-01-01';
                 maxX = '2027-12-31';
             }
+
+            // Preparar los datos acotando (clamping) las fechas para que Chart.js dibuje las barras
+            const chartData = list.filter(d => d.inicio && d.fin).map(d => {
+                let visibleStart = d.inicio < minX ? minX : d.inicio;
+                let visibleEnd = d.fin > maxX ? maxX : d.fin;
+
+                return {
+                    x: [visibleStart, visibleEnd],
+                    y: `${d.nombre} (${d.ano})`,
+                    ano: d.ano,
+                    realStart: d.inicio,
+                    realEnd: d.fin
+                };
+            });
+
+            const dynamicHeight = Math.max(400, chartData.length * 28);
+            wrapper.style.height = `${dynamicHeight}px`;
 
             chartInstance = new Chart(ctx, {
                 type: 'bar',
@@ -742,7 +765,7 @@
                             callbacks: {
                                 label: function(context) {
                                     let raw = context.raw;
-                                    return `Período: ${raw.x[0]} al ${raw.x[1]}`;
+                                    return `Período Completo: ${raw.realStart} al ${raw.realEnd}`;
                                 }
                             }
                         }
