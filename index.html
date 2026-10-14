@@ -29,7 +29,7 @@
             color: white;
             padding: 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
@@ -46,6 +46,32 @@
         }
 
         .header-text h1 { margin: 0 0 4px 0; font-size: 22px; }
+
+        /* Estilo para la barra de resumen de filtros activos */
+        .active-filters-banner {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .active-filters-banner strong {
+            color: #1e3a8a;
+        }
+
+        .filter-tag {
+            background: #dbeafe;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
 
         .controls {
             display: flex;
@@ -121,6 +147,7 @@
             border: 1px solid var(--border);
             overflow-x: auto;
             max-height: 500px;
+            margin-bottom: 20px;
         }
 
         table {
@@ -154,6 +181,16 @@
         .tag-2026 { background: #dbeafe; color: #1e40af; }
         .tag-2027 { background: #dcfce7; color: #166534; }
 
+        /* Footer institucional */
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #64748b;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
         /* ==========================================
            REGLAS DE IMPRESIÓN / PDF PERFECTAS
            ========================================== */
@@ -179,7 +216,17 @@
                 background-color: #1e3a8a !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                margin-bottom: 8px;
+            }
+
+            .active-filters-banner {
+                background-color: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
                 margin-bottom: 10px;
+                padding: 6px 10px;
             }
 
             .chart-container, .table-container {
@@ -213,6 +260,10 @@
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
+
+            .footer {
+                border-top: 1px solid #ccc !important;
+            }
         }
     </style>
 </head>
@@ -223,6 +274,11 @@
         <div class="header-text">
             <h1>Cronograma de Vacaciones Gerencia de Operaciones (2026 - 2027)</h1>
         </div>
+    </div>
+
+    <!-- Banner que muestra los filtros aplicados -->
+    <div class="active-filters-banner" id="activeFiltersBanner">
+        <span>🔍 <strong>Filtros Aplicados:</strong> Cargando...</span>
     </div>
 
     <div class="controls">
@@ -305,6 +361,10 @@
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
+    </div>
+
+    <div class="footer">
+        © 2026 — Desarrollado por Ing. Karli Jiménez
     </div>
 
     <script>
@@ -482,23 +542,46 @@
             return processed;
         }
 
+        function updateFilterBanner(unidad, area, ubicacion, month, year, guardia, search) {
+            const banner = document.getElementById('activeFiltersBanner');
+            const monthNames = {
+                'ALL': 'Todos', '01': 'Enero', '02': 'Febrero', '03': 'Marzo',
+                '04': 'Abril', '05': 'Mayo', '06': 'Junio', '07': 'Julio',
+                '08': 'Agosto', '09': 'Septiembre', '10': 'Octubre',
+                '11': 'Noviembre', '12': 'Diciembre'
+            };
+
+            banner.innerHTML = `
+                <span>🔍 <strong>Filtros Aplicados:</strong></span>
+                <span>Unidad: <span class="filter-tag">${unidad}</span></span>
+                <span>Área: <span class="filter-tag">${area}</span></span>
+                <span>Ubicación: <span class="filter-tag">${ubicacion}</span></span>
+                <span>Mes: <span class="filter-tag">${monthNames[month] || month}</span></span>
+                <span>Año: <span class="filter-tag">${year}</span></span>
+                <span>Guardia: <span class="filter-tag">${guardia}</span></span>
+                ${search ? `<span>Búsqueda: <span class="filter-tag">"${search}"</span></span>` : ''}
+            `;
+        }
+
         function renderAll() {
-            const data = calculateAllData();
             const unidadFilter = document.getElementById('filterUnidad').value;
             const areaFilter = document.getElementById('filterArea').value;
             const ubicacionFilter = document.getElementById('filterUbicacion').value;
             const yearFilter = document.getElementById('filterYear').value;
             const monthFilter = document.getElementById('filterMonth').value;
             const guardiaFilter = document.getElementById('filterGuardia').value;
-            const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
+            const searchFilter = document.getElementById('filterSearch').value.trim();
 
+            updateFilterBanner(unidadFilter, areaFilter, ubicacionFilter, monthFilter, yearFilter, guardiaFilter, searchFilter);
+
+            const data = calculateAllData();
             const filtered = data.filter(d => {
                 if (unidadFilter !== 'ALL' && d.unidad !== unidadFilter) return false;
                 if (areaFilter !== 'ALL' && d.area !== areaFilter) return false;
                 if (ubicacionFilter !== 'ALL' && d.ubicacion !== ubicacionFilter) return false;
                 if (yearFilter !== 'ALL' && d.ano.toString() !== yearFilter) return false;
                 if (guardiaFilter !== 'ALL' && d.guardia.toUpperCase() !== guardiaFilter.toUpperCase()) return false;
-                if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter) && !d.cedula.toLowerCase().includes(searchFilter)) return false;
+                if (searchFilter && !d.nombre.toLowerCase().includes(searchFilter.toLowerCase()) && !d.cedula.toLowerCase().includes(searchFilter.toLowerCase())) return false;
 
                 if (monthFilter !== 'ALL') {
                     if (!d.inicio || !d.fin) return false;
