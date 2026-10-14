@@ -47,7 +47,7 @@
 
         .header-text h1 { margin: 0 0 4px 0; font-size: 22px; }
 
-        /* Estilo para la barra de resumen de filtros activos */
+        /* Barra de resumen de filtros activos */
         .active-filters-banner {
             background-color: #eff6ff;
             border: 1px solid #bfdbfe;
@@ -276,7 +276,7 @@
         </div>
     </div>
 
-    <!-- Banner que muestra los filtros aplicados -->
+    <!-- Banner con los filtros aplicados -->
     <div class="active-filters-banner" id="activeFiltersBanner">
         <span>🔍 <strong>Filtros Aplicados:</strong> Cargando...</span>
     </div>
@@ -475,22 +475,48 @@
             }
         }
 
+        // Lógica de cálculo de vacaciones con extensión automática por feriados nacionales
         function calculateVacations(dateStr, days, is5x2) {
             if (!dateStr) return { fin: '', reinc: '', feriadosCount: 0 };
 
             let start = new Date(dateStr + 'T00:00:00');
             let feriadosEncontrados = 0;
-
-            let end = new Date(start);
-            end.setDate(end.getDate() + (days - 1));
-
             let curr = new Date(start);
-            while (curr <= end) {
+            let diasEfectivos = 0;
+
+            while (diasEfectivos < days) {
                 let isoStr = curr.toISOString().split('T')[0];
                 if (feriados.includes(isoStr)) {
                     feriadosEncontrados++;
                 }
-                curr.setDate(curr.getDate() + 1);
+                diasEfectivos++;
+                if (diasEfectivos < days) {
+                    curr.setDate(curr.getDate() + 1);
+                }
+            }
+
+            let end = new Date(curr);
+
+            if (feriadosEncontrados > 0) {
+                let adicionalesACorrer = feriadosEncontrados;
+                let iter = 0;
+                while (adicionalesACorrer > 0 && iter < 10) {
+                    let checkCurr = new Date(end);
+                    checkCurr.setDate(checkCurr.getDate() + 1);
+                    let nuevosFeriados = 0;
+                    
+                    for (let i = 0; i < adicionalesACorrer; i++) {
+                        let isoStr = checkCurr.toISOString().split('T')[0];
+                        if (feriados.includes(isoStr)) {
+                            nuevosFeriados++;
+                        }
+                        checkCurr.setDate(checkCurr.getDate() + 1);
+                    }
+                    
+                    end.setDate(end.getDate() + adicionalesACorrer);
+                    adicionalesACorrer = nuevosFeriados;
+                    iter++;
+                }
             }
 
             let reinc = new Date(end);
