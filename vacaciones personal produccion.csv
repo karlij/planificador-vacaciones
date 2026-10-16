@@ -1,83 +1,83 @@
 ﻿ITEM;UNIDAD;Area;Grupo;NOMINA;CEDULA;APELLIDO Y NOMBRE;ROL;Ubicación;GUARDIA;dias de Vacaciones;Vacaciones 2026;Vacaciones 2027
 67;Ingenieria de Producción;Oficina;;VULCAN;V- 14,317,216;VASQUEZ ROGER;Jefe de Ingeniería de Producción;El Tigre;5x2;21;;2027-12-13
-69;Ingenieria de Producción;Pozos;;VULCAN;V- 21,196,997;AVILA ADOLFO;Ingeniero de Optimización;Campo Cariña;5x2;21;;2027-09-20
 68;Ingenieria de Producción;Pozos;;ATO PDVSA;V- 18,886,331;MOYA ANDREINA;Ingeniero de Optimización;Campo Cariña;5x2;34;;2027-07-19
-71;Ingenieria de Producción;Pozos;;ATO PDVSA;V- 16,250,266;GUEVARA LUIS;Tecnico de Optimización;Campo Cariña;5x2;34;;2027-08-16
+69;Ingenieria de Producción;Pozos;;VULCAN;V- 21,196,997;AVILA ADOLFO;Ingeniero de Optimización;Campo Cariña;5x2;21;;2027-09-20
 70;Ingenieria de Producción;Pozos;;VULCAN;V- 24,239,120;SILVERA JOSE;Tecnico de Optimización;Campo Cariña;5x2;21;;2027-01-04
+71;Ingenieria de Producción;Pozos;;ATO PDVSA;V- 16,250,266;GUEVARA LUIS;Tecnico de Optimización;Campo Cariña;5x2;34;;2027-08-16
 58;Mantenimiento;Electricidad;;VULCAN;V- 11,901,673;HERNÁNDEZ JUAN;Líder;Campo Cariña;5x2;21;2026-12-28;2027-11-01
-43;Mantenimiento;Electricidad;GRUPO 2;ATO PDVSA;V- 10,938,836;REYES ROMULO;Técnico;Campo Cariña;4x4;34;2026-12-07;2027-12-06
-53;Mantenimiento;Electricidad;GRUPO 4;ATO PDVSA;V- 13,157,559;MILLÁN JOSÉ;Técnico;Campo Cariña;4x4;34;2026-09-14;2027-09-06
-60;Mantenimiento;Electricidad;;VULCAN;V- 17,786,819;SEQUERA NOEL;Técnico;Campo Cariña;5x2;21;;2027-08-09
+38;Mantenimiento;Electricidad;GRUPO 1;ATO PDVSA;V- 16,249,514;ROJAS ELIUVY;Técnico;Campo Cariña;4x4;34;2026-07-27;2027-01-25
 48;Mantenimiento;Electricidad;GRUPO 3;ATO PDVSA;V- 11,143,072;QUIJADA JOHN;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-07-19
 59;Mantenimiento;Electricidad;;VULCAN;V- 13,696,462;CAMACHO JADIXON;Técnico;Campo Cariña;5x2;21;;2027-07-19
-38;Mantenimiento;Electricidad;GRUPO 1;ATO PDVSA;V- 16,249,514;ROJAS ELIUVY;Técnico;Campo Cariña;4x4;34;2026-07-27;2027-01-25
+60;Mantenimiento;Electricidad;;VULCAN;V- 17,786,819;SEQUERA NOEL;Técnico;Campo Cariña;5x2;21;;2027-08-09
+53;Mantenimiento;Electricidad;GRUPO 4;ATO PDVSA;V- 13,157,559;MILLÁN JOSÉ;Técnico;Campo Cariña;4x4;34;2026-09-14;2027-09-06
+43;Mantenimiento;Electricidad;GRUPO 2;ATO PDVSA;V- 10,938,836;REYES ROMULO;Técnico;Campo Cariña;4x4;34;2026-12-07;2027-12-06
 61;Mantenimiento;Facilidades;;VULCAN;V- 10,068,174;QUIÑONES JOSE;Líder;Campo Cariña;5x2;21;2027-01-12;2027-12-13
-45;Mantenimiento;Facilidades;GRUPO 2;ATO PDVSA;V- 13,174,940;BRICENO MAURICIO;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-12-27
-49;Mantenimiento;Facilidades;GRUPO 3;ATO PDVSA;V- 12,051,012;ROJAS JOSÉ ;Técnico;Campo Cariña;4x4;34;2026-07-20;2027-08-16
-50;Mantenimiento;Facilidades;GRUPO 3;ATO PDVSA;V- 18,227,237;VIVAS MARCOS;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-07-19
-40;Mantenimiento;Facilidades;GRUPO 1;ATO PDVSA;V- 14,552,887;MEDINA EDUYS;Técnico;Campo Cariña;4x4;34;2026-11-09;2027-05-17
-54;Mantenimiento;Facilidades;GRUPO 4;ATO PDVSA;V- 17,263,639;SALAZAR ALCIDES;Técnico;Campo Cariña;4x4;34;2026-12-14;2027-04-12
-44;Mantenimiento;Facilidades;GRUPO 2;ATO PDVSA;V- 10,064,313;GARCIA JUAN;Técnico;Campo Cariña;4x4;34;2026-04-20;2027-02-15
-39;Mantenimiento;Facilidades;GRUPO 1;ATO PDVSA;V- 13,752,904;SOLIS CRUZ;Técnico;Campo Cariña;4x4;34;2026-12-14;2026-12-13
-62;Mantenimiento;Facilidades;;VULCAN;V- 15,128,766;RODRIGUEZ MAIKER;Técnico;Campo Cariña;5x2;21;;2026-08-23
 55;Mantenimiento;Facilidades;GRUPO 4;VULCAN;V- 16,077,785;TENÍAS JOHAN;Técnico;Campo Cariña;4x4;21;;2026-07-12
+62;Mantenimiento;Facilidades;;VULCAN;V- 15,128,766;RODRIGUEZ MAIKER;Técnico;Campo Cariña;5x2;21;;2026-08-23
+39;Mantenimiento;Facilidades;GRUPO 1;ATO PDVSA;V- 13,752,904;SOLIS CRUZ;Técnico;Campo Cariña;4x4;34;2026-12-14;2026-12-13
+44;Mantenimiento;Facilidades;GRUPO 2;ATO PDVSA;V- 10,064,313;GARCIA JUAN;Técnico;Campo Cariña;4x4;34;2026-04-20;2027-02-15
+54;Mantenimiento;Facilidades;GRUPO 4;ATO PDVSA;V- 17,263,639;SALAZAR ALCIDES;Técnico;Campo Cariña;4x4;34;2026-12-14;2027-04-12
+40;Mantenimiento;Facilidades;GRUPO 1;ATO PDVSA;V- 14,552,887;MEDINA EDUYS;Técnico;Campo Cariña;4x4;34;2026-11-09;2027-05-17
+50;Mantenimiento;Facilidades;GRUPO 3;ATO PDVSA;V- 18,227,237;VIVAS MARCOS;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-07-19
+49;Mantenimiento;Facilidades;GRUPO 3;ATO PDVSA;V- 12,051,012;ROJAS JOSÉ ;Técnico;Campo Cariña;4x4;34;2026-07-20;2027-08-16
+45;Mantenimiento;Facilidades;GRUPO 2;ATO PDVSA;V- 13,174,940;BRICENO MAURICIO;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-12-27
 63;Mantenimiento;Instrumentación;;ATO PDVSA;V- 16,396,024;MOYA JESÚS;Líder;Campo Cariña;5x2;34;2026-07-27;2027-07-26
-46;Mantenimiento;Instrumentación;GRUPO 2;ATO PDVSA;V- 18,229,333;TAMOY ADRIÁN;Técnico;Campo Cariña;4x4;34;2026-07-13;2027-12-13
-64;Mantenimiento;Instrumentación;;VULCAN;V- 28,095,192;FLORES ENZO;Técnico;Campo Cariña;5x2;21;;2027-11-22
-65;Mantenimiento;Instrumentación;;VULCAN;V- 30,386,338;NOE PABLO;Técnico;Campo Cariña;5x2;21;;2027-10-18
-41;Mantenimiento;Instrumentación;GRUPO 1;VULCAN;V- 20,538,120;RODRIGUEZ RONNY;Técnico;Campo Cariña;4x4;21;;2027-07-05
-51;Mantenimiento;Instrumentación;GRUPO 3;ATO PDVSA;V- 18,454,011;GARBÁN JORGE ;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-03-01
 56;Mantenimiento;Instrumentación;GRUPO 4;VULCAN;V- 17,590,243;ROMERO VÍCTOR;Técnico;Campo Cariña;4x4;21;;2026-09-06
+51;Mantenimiento;Instrumentación;GRUPO 3;ATO PDVSA;V- 18,454,011;GARBÁN JORGE ;Técnico;Campo Cariña;4x4;34;2026-12-21;2027-03-01
+41;Mantenimiento;Instrumentación;GRUPO 1;VULCAN;V- 20,538,120;RODRIGUEZ RONNY;Técnico;Campo Cariña;4x4;21;;2027-07-05
+65;Mantenimiento;Instrumentación;;VULCAN;V- 30,386,338;NOE PABLO;Técnico;Campo Cariña;5x2;21;;2027-10-18
+64;Mantenimiento;Instrumentación;;VULCAN;V- 28,095,192;FLORES ENZO;Técnico;Campo Cariña;5x2;21;;2027-11-22
+46;Mantenimiento;Instrumentación;GRUPO 2;ATO PDVSA;V- 18,229,333;TAMOY ADRIÁN;Técnico;Campo Cariña;4x4;34;2026-07-13;2027-12-13
 66;Mantenimiento;Mecánica;;ATO PDVSA;V- 12,680,570;PERDOMO HENRRY;Líder;Campo Cariña;5x2;34;2026-12-28;2027-03-22
+57;Mantenimiento;Mecánica;GRUPO 4;VULCAN;V- 17,869,233;GIL FREDDY;Técnico;Campo Cariña;4x4;21;;2026-07-12
+52;Mantenimiento;Mecánica;GRUPO 3;ATO PDVSA;V- 17,747,170;CEDEÑO LUIS;Técnico;Campo Cariña;4x4;34;2026-07-20;2027-03-20
 42;Mantenimiento;Mecánica;GRUPO 1;ATO PDVSA;V- 17,746,974;AGUILERA JHONANS;Técnico;Campo Cariña;4x4;34;2026-08-10;2027-08-16
 47;Mantenimiento;Mecánica;GRUPO 2;ATO PDVSA;V- 13,497,242;TORRES NIUMER;Técnico;Campo Cariña;4x4;34;2027-03-08;2027-08-16
-52;Mantenimiento;Mecánica;GRUPO 3;ATO PDVSA;V- 17,747,170;CEDEÑO LUIS;Técnico;Campo Cariña;4x4;34;2026-07-20;2027-03-20
-57;Mantenimiento;Mecánica;GRUPO 4;VULCAN;V- 17,869,233;GIL FREDDY;Técnico;Campo Cariña;4x4;21;;2026-07-12
-35;Producción;Estación / Pozos;;ATO PDVSA;V- 12,680,774;GOMEZ CARLOS ;Operador de Pozos Campo ;Cariña Sur;4x4;34;;2027-12-06
-33;Producción;Estación / Pozos;;ATO PDVSA;V- 12,681,284;MOLINA SERGIO;Operador de Pozos Campo ;Cariña Sur;4x4;34;2026-12-21;2027-06-07
-34;Producción;Estación / Pozos;;ATO PDVSA;V- 15,375,908;PEREZ JUAN ;Operador de Pozos Campo ;Cariña Sur;4x4;34;;2027-03-01
 32;Producción;Estación / Pozos;;ATO PDVSA;V- 12,015,264;MARTINEZ MANUEL;Operador de Pozos Campo ;Cariña Sur;4x4;34;;2027-01-04
-37;Producción;Estación / Pozos;;ATO PDVSA;V- 13,611,204;CAMPOS RAFAEL  ;Supervisor Campo ;Cariña Sur;7x7;34;;2027-12-06
+34;Producción;Estación / Pozos;;ATO PDVSA;V- 15,375,908;PEREZ JUAN ;Operador de Pozos Campo ;Cariña Sur;4x4;34;;2027-03-01
+33;Producción;Estación / Pozos;;ATO PDVSA;V- 12,681,284;MOLINA SERGIO;Operador de Pozos Campo ;Cariña Sur;4x4;34;2026-12-21;2027-06-07
+35;Producción;Estación / Pozos;;ATO PDVSA;V- 12,680,774;GOMEZ CARLOS ;Operador de Pozos Campo ;Cariña Sur;4x4;34;;2027-12-06
 36;Producción;Estación / Pozos;;VULCAN;V- 8,458,648;LEZAMA HENRRY ;Supervisor Campo ;Cariña Sur;7x7;21;;2027-07-05
-12;Producción;Estaciones;;VULCAN;V- 16,172,617;GONZÁLEZ GREDDY ;Operador de Estación ;Bared-10;4x4;21;;2027-12-13
-11;Producción;Estaciones;;ATO PDVSA;V- 15,846,580;MEDINA JOSE;Operador de Estación ;Bared-10;4x4;34;;2027-11-01
-10;Producción;Estaciones;;VULCAN;V- 15,877,062;LICETT DIOBER ;Operador de Estación ;Bared-10;4x4;21;;2027-10-04
-9;Producción;Estaciones;;ATO PDVSA;V- 17,746,783;ROSAS ANGEL  ;Operador de Estación ;Bared-10;4x4;34;;2027-04-05
-6;Producción;Estaciones;;ATO PDVSA;V- 15,716,639;BARRETO JOHN ;Operador de Estación ;Bared-10;4x4;34;;2027-03-15
-5;Producción;Estaciones;;VULCAN;V- 12,439,111;FLORES YUVER ;Operador de Estación ;Bared-10;4x4;21;;2027-02-13
-7;Producción;Estaciones;;ATO PDVSA;V- 19,143,475;CENTENO ANDRYKSON;Operador de Estación ;Bared-10;4x4;34;;2027-02-01
+37;Producción;Estación / Pozos;;ATO PDVSA;V- 13,611,204;CAMPOS RAFAEL  ;Supervisor Campo ;Cariña Sur;7x7;34;;2027-12-06
 8;Producción;Estaciones;;ATO PDVSA;V- 14,640,661;ORDAZ FREDDY;Operador de Estación ;Bared-10;4x4;34;;2026-03-08
-4;Producción;Estaciones;;ATO PDVSA;V- 10,936,415;URPIN ANGEL;Supervisor de Estación ;Bared-10;5x2;34;;2027-12-06
+7;Producción;Estaciones;;ATO PDVSA;V- 19,143,475;CENTENO ANDRYKSON;Operador de Estación ;Bared-10;4x4;34;;2027-02-01
+5;Producción;Estaciones;;VULCAN;V- 12,439,111;FLORES YUVER ;Operador de Estación ;Bared-10;4x4;21;;2027-02-13
+6;Producción;Estaciones;;ATO PDVSA;V- 15,716,639;BARRETO JOHN ;Operador de Estación ;Bared-10;4x4;34;;2027-03-15
+9;Producción;Estaciones;;ATO PDVSA;V- 17,746,783;ROSAS ANGEL  ;Operador de Estación ;Bared-10;4x4;34;;2027-04-05
+10;Producción;Estaciones;;VULCAN;V- 15,877,062;LICETT DIOBER ;Operador de Estación ;Bared-10;4x4;21;;2027-10-04
+11;Producción;Estaciones;;ATO PDVSA;V- 15,846,580;MEDINA JOSE;Operador de Estación ;Bared-10;4x4;34;;2027-11-01
+12;Producción;Estaciones;;VULCAN;V- 16,172,617;GONZÁLEZ GREDDY ;Operador de Estación ;Bared-10;4x4;21;;2027-12-13
 3;Producción;Estaciones;;VULCAN;V- 15,376,537;ABREU SERGIO ;Supervisor de Estación ;Bared-10;5x2;21;;2027-11-05
+4;Producción;Estaciones;;ATO PDVSA;V- 10,936,415;URPIN ANGEL;Supervisor de Estación ;Bared-10;5x2;34;;2027-12-06
 2;Producción;Estaciones;;ATO PDVSA;V- 18,112,864;RODRIGUEZ RONALD;Coordinador de Estación;Campo Cariña;5x2;34;;2027-12-13
-19;Producción;Estaciones;;VULCAN;V- 24,964,761;CHÓPITE KENNEDY ;Operador de Estación  ;Cariña Norte;4x4;21;;2027-12-23
-18;Producción;Estaciones;;ATO PDVSA;V- 16,832,346;URRIBARRI JORGE;Operador de Estación  ;Cariña Norte;4x4;34;2026-12-21;2027-12-20
-17;Producción;Estaciones;;VULCAN;V- 12,915,160;BELLO MANUEL;Operador de Estación  ;Cariña Norte;4x4;21;;2027-12-06
-16;Producción;Estaciones;;VULCAN;V- 14,082,387;SILVA JUAN;Operador de Estación  ;Cariña Norte;4x4;21;;2027-11-08
-15;Producción;Estaciones;;ATO PDVSA;V- 11,435,750;RODRIGUEZ JESUS;Operador de Estación  ;Cariña Norte;4x4;34;;2027-08-02
-14;Producción;Estaciones;;VULCAN;V- 18,228,671;CAVADIA ZUMNUEL;Operador de Estación  ;Cariña Norte;4x4;21;;2027-07-15
 13;Producción;Estaciones;;ATO PDVSA;V- 14,029,707;PEREZ RICHARD;Operador de Estación  ;Cariña Norte;4x4;34;;2027-02-01
-31;Producción;Estaciones;;ATO PDVSA;V- 18,414,421;AGUILERA JONATHAN;Supervisor Estación  ;Cariña Norte;7x7;34;;2027-12-13
+14;Producción;Estaciones;;VULCAN;V- 18,228,671;CAVADIA ZUMNUEL;Operador de Estación  ;Cariña Norte;4x4;21;;2027-07-15
+15;Producción;Estaciones;;ATO PDVSA;V- 11,435,750;RODRIGUEZ JESUS;Operador de Estación  ;Cariña Norte;4x4;34;;2027-08-02
+16;Producción;Estaciones;;VULCAN;V- 14,082,387;SILVA JUAN;Operador de Estación  ;Cariña Norte;4x4;21;;2027-11-08
+17;Producción;Estaciones;;VULCAN;V- 12,915,160;BELLO MANUEL;Operador de Estación  ;Cariña Norte;4x4;21;;2027-12-06
+18;Producción;Estaciones;;ATO PDVSA;V- 16,832,346;URRIBARRI JORGE;Operador de Estación  ;Cariña Norte;4x4;34;2026-12-21;2027-12-20
+19;Producción;Estaciones;;VULCAN;V- 24,964,761;CHÓPITE KENNEDY ;Operador de Estación  ;Cariña Norte;4x4;21;;2027-12-23
 30;Producción;Estaciones;;ATO PDVSA;V- 10,937,395;RONDON CARLOS;Supervisor Estación  ;Cariña Norte;7x7;34;;2027-11-01
+31;Producción;Estaciones;;ATO PDVSA;V- 18,414,421;AGUILERA JONATHAN;Supervisor Estación  ;Cariña Norte;7x7;34;;2027-12-13
 1;Producción;Pozos;;VULCAN;V- 20,737,508;LEAL VICENTE;Coordinador de Pozos;Campo Cariña;5x2;21;;2027-03-01
-25;Producción;Pozos;;ATO PDVSA;V- 15,005,659;GARCIA VICENTE ;Operador de Pozos ;Cariña Norte;4x4;34;2026-12-21;2027-09-20
-24;Producción;Pozos;;ATO PDVSA;V- 12,438,753;LEDEZMA ROSALIO;Operador de Pozos ;Cariña Norte;4x4;34;;2027-08-16
-27;Producción;Pozos;;VULCAN;V- 8,974,333;GÓMEZ JESÚS;Operador de Pozos ;Cariña Norte;4x4;21;;2027-08-02
-26;Producción;Pozos;;VULCAN;V- 25,721,370;PARRA LUIS ;Operador de Pozos ;Cariña Norte;4x4;21;;2027-06-28
-23;Producción;Pozos;;ATO PDVSA;V- 12,677,861;MARTINEZ MARCOS;Operador de Pozos ;Cariña Norte;4x4;34;2026-12-07;2027-05-03
-22;Producción;Pozos;;ATO PDVSA;V- 20,171,361;FAJARDO RICKI  ;Operador de Pozos ;Cariña Norte;4x4;34;;2027-03-15
-21;Producción;Pozos;;ATO PDVSA;V- 14,817,977;MORENO GREGURYS;Operador de Pozos ;Cariña Norte;4x4;34;;2027-02-08
 20;Producción;Pozos;;ATO PDVSA;V- 10,069,933;GARCIA LUIS;Operador de Pozos ;Cariña Norte;4x4;34;;2027-01-04
-29;Producción;Pozos;;ATO PDVSA;V- 10,057,494;MARIN YOEL;Supervisor Campo ;Cariña Norte;7x7;34;;2027-06-14
+21;Producción;Pozos;;ATO PDVSA;V- 14,817,977;MORENO GREGURYS;Operador de Pozos ;Cariña Norte;4x4;34;;2027-02-08
+22;Producción;Pozos;;ATO PDVSA;V- 20,171,361;FAJARDO RICKI  ;Operador de Pozos ;Cariña Norte;4x4;34;;2027-03-15
+23;Producción;Pozos;;ATO PDVSA;V- 12,677,861;MARTINEZ MARCOS;Operador de Pozos ;Cariña Norte;4x4;34;2026-12-07;2027-05-03
+26;Producción;Pozos;;VULCAN;V- 25,721,370;PARRA LUIS ;Operador de Pozos ;Cariña Norte;4x4;21;;2027-06-28
+27;Producción;Pozos;;VULCAN;V- 8,974,333;GÓMEZ JESÚS;Operador de Pozos ;Cariña Norte;4x4;21;;2027-08-02
+24;Producción;Pozos;;ATO PDVSA;V- 12,438,753;LEDEZMA ROSALIO;Operador de Pozos ;Cariña Norte;4x4;34;;2027-08-16
+25;Producción;Pozos;;ATO PDVSA;V- 15,005,659;GARCIA VICENTE ;Operador de Pozos ;Cariña Norte;4x4;34;2026-12-21;2027-09-20
 28;Producción;Pozos;;VULCAN;V- 25,566,685;URBINA ALFREDO;Supervisor Campo ;Cariña Norte;7x7;21;;2027-05-03
-81;Servicios a Pozos;Pozos;;ATO PDVSA;V- 18,371,774;BONILLA ENDYS;Company Man;Campo Cariña;;34;;2027-08-02
-82;Servicios a Pozos;Pozos;;ATO PDVSA;V- 13,165,094;CARAGUICHE EMIL;Company Man;Campo Cariña;;34;;2027-04-05
-76;Servicios a Pozos;Pozos;;VULCAN;V- 16,077,476;PERALES WUILMER;Company Man;Campo Cariña;;21;;
-77;Servicios a Pozos;Pozos;;VULCAN;V- 15,672,953;OLIVARES JESÚS;Company Man;Campo Cariña;;21;;
-78;Servicios a Pozos;Pozos;;VULCAN;V- 8,966,748;VERACIERTA LORENZO;Company Man;Campo Cariña;;21;;
-79;Servicios a Pozos;Pozos;;VULCAN;V- 17,404,423;ROMERO PEDRO;Company Man;Campo Cariña;;21;;
-80;Servicios a Pozos;Pozos;;VULCAN;V- 18,983,177;PATETE WILFREDO ;Company Man;Campo Cariña;;21;;
-74;Servicios a Pozos;Pozos;;VULCAN;V- 19,168,636;NIEVES FREDDY;Coordinador De Workover - Well Services;Campo Cariña;;21;;
-75;Servicios a Pozos;Pozos;;VULCAN;V- 17,592,636;GONZÁLEZ CÉSAR;Supervisor De Workover - Well Services;Campo Cariña;;21;;
+29;Producción;Pozos;;ATO PDVSA;V- 10,057,494;MARIN YOEL;Supervisor Campo ;Cariña Norte;7x7;34;;2027-06-14
+76;Servicios a Pozos;Pozos;;VULCAN;V- 16,077,476;PERALES WUILMER;Company Man;Campo Cariña;;21;;2027-03-15
+82;Servicios a Pozos;Pozos;;ATO PDVSA;V- 13,165,094;CARAGUICHE EMIL;Company Man;Campo Cariña;;34;;2027-05-03
+81;Servicios a Pozos;Pozos;;ATO PDVSA;V- 18,371,774;BONILLA ENDYS;Company Man;Campo Cariña;;34;;2027-08-09
+79;Servicios a Pozos;Pozos;;VULCAN;V- 17,404,423;ROMERO PEDRO;Company Man;Campo Cariña;;21;;2027-09-27
+78;Servicios a Pozos;Pozos;;VULCAN;V- 8,966,748;VERACIERTA LORENZO;Company Man;Campo Cariña;;21;;2027-10-18
+80;Servicios a Pozos;Pozos;;VULCAN;V- 18,983,177;PATETE WILFREDO ;Company Man;Campo Cariña;;21;;2027-11-01
+77;Servicios a Pozos;Pozos;;VULCAN;V- 15,672,953;OLIVARES JESÚS;Company Man;Campo Cariña;;21;;2027-11-22
+74;Servicios a Pozos;Pozos;;VULCAN;V- 19,168,636;NIEVES FREDDY;Coordinador De Workover - Well Services;Campo Cariña;;21;;2027-07-26
+75;Servicios a Pozos;Pozos;;VULCAN;V- 17,592,636;GONZÁLEZ CÉSAR;Supervisor De Workover - Well Services;Campo Cariña;;21;;2027-09-06
 73;Tratamiento de Quimica;Estación / Pozos;;VULCAN;V- 19,346,504;CARLOS MATA;Analista de Laboratorio;Campo Cariña;5x2;21;;2027-07-19
 72;Tratamiento de Quimica;Oficina;;VULCAN;V- 8,470,087;RAMON GUARISMA;Ingeniero Químico;El Tigre;5x2;21;;2027-06-21
