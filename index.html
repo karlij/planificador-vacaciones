@@ -119,6 +119,23 @@
 
         .btn-pdf:hover { background-color: #b91c1c; }
 
+        .btn-reset {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-reset:hover { background-color: #475569; }
+
         .chart-container {
             background: var(--card-bg);
             padding: 20px;
@@ -307,7 +324,7 @@
             <select id="filterGuardia" onchange="renderAll()"><option value="ALL">Todas las Guardias</option></select>
         </div>
 
-        <!-- Nuevos filtros de rango de fechas -->
+        <!-- Filtros de rango de fechas -->
         <div class="form-group">
             <label>Fecha Desde</label>
             <input type="date" id="filterDateFrom" onchange="renderAll()">
@@ -323,7 +340,10 @@
             <input type="text" id="filterSearch" placeholder="Nombre o Cédula..." oninput="renderAll()">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="flex-direction: row; gap: 8px;">
+            <button class="btn-reset" onclick="clearFilters()" title="Limpiar todos los filtros">
+                🔄 Limpiar Filtros
+            </button>
             <button class="btn-pdf" onclick="window.print()">
                 📄 Exportar a PDF (Carta)
             </button>
@@ -400,10 +420,10 @@
             ubicacionSelect.innerHTML = '<option value="ALL">Todas las Ubicaciones</option>';
             guardiaSelect.innerHTML = '<option value="ALL">Todas las Guardias</option>';
 
-            const uniqueUnidades = [...new Set(rawSource.map(item => item.unidad))].sort();
-            const uniqueAreas = [...new Set(rawSource.map(item => item.area))].sort();
-            const uniqueUbicaciones = [...new Set(rawSource.map(item => item.ubicacion))].sort();
-            const uniqueGuardias = [...new Set(rawSource.map(item => item.guardia))].sort();
+            const uniqueUnidades = [...new Set(rawSource.map(item => item.unidad))].filter(Boolean).sort();
+            const uniqueAreas = [...new Set(rawSource.map(item => item.area))].filter(Boolean).sort();
+            const uniqueUbicaciones = [...new Set(rawSource.map(item => item.ubicacion))].filter(Boolean).sort();
+            const uniqueGuardias = [...new Set(rawSource.map(item => item.guardia))].filter(Boolean).sort();
 
             uniqueUnidades.forEach(val => {
                 let opt = document.createElement('option');
@@ -430,6 +450,18 @@
             });
         }
 
+        function convertDateFormat(dateStr) {
+            if (!dateStr || !dateStr.includes('/')) return dateStr;
+            let parts = dateStr.trim().split('/');
+            if (parts.length === 3) {
+                let day = parts[0].padStart(2, '0');
+                let month = parts[1].padStart(2, '0');
+                let year = parts[2];
+                return `${year}-${month}-${day}`;
+            }
+            return dateStr;
+        }
+
         function parseCSV(text) {
             const lines = text.split(/\r\n|\n/);
             if (lines.length < 2) return;
@@ -448,6 +480,9 @@
                     let nominaBase = cols[4] ? cols[4].trim() : '';
                     let nominaFull = grupo ? `${grupo} ${nominaBase}` : nominaBase;
 
+                    let rawV2026 = cols[11] ? cols[11].trim() : '';
+                    let rawV2027 = cols[12] ? cols[12].trim() : '';
+
                     newSource.push({
                         id: parseInt(cols[0]) || i,
                         unidad: cols[1] ? cols[1].trim() : '',
@@ -459,8 +494,8 @@
                         ubicacion: cols[8] ? cols[8].trim() : '',
                         guardia: cols[9] ? cols[9].trim() : '',
                         dias: parseInt(cols[10]) || 21,
-                        v2026: cols[11] ? cols[11].trim() : '',
-                        v2027: cols[12] ? cols[12].trim() : ''
+                        v2026: convertDateFormat(rawV2026),
+                        v2027: convertDateFormat(rawV2027)
                     });
                 }
             }
@@ -472,10 +507,25 @@
             }
         }
 
+        function clearFilters() {
+            document.getElementById('filterUnidad').value = 'ALL';
+            document.getElementById('filterArea').value = 'ALL';
+            document.getElementById('filterUbicacion').value = 'ALL';
+            document.getElementById('filterMonth').value = 'ALL';
+            document.getElementById('filterYear').value = 'ALL';
+            document.getElementById('filterGuardia').value = 'ALL';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            document.getElementById('filterSearch').value = '';
+            renderAll();
+        }
+
         function calculateVacations(dateStr, days, is5x2) {
             if (!dateStr) return { fin: '', reinc: '', feriadosCount: 0 };
 
             let start = new Date(dateStr + 'T00:00:00');
+            if (isNaN(start.getTime())) return { fin: '', reinc: '', feriadosCount: 0 };
+
             let feriadosEncontrados = 0;
             let curr = new Date(start);
             let diasEfectivos = 0;
@@ -686,7 +736,7 @@
             let timeUnit = 'month';
             let displayFormat = { month: 'MMM yyyy' };
 
-            // Si hay un rango de fechas personalizado, ajustar los límites del eje X
+            // Ajuste de límites del eje X
             if (dateFrom || dateTo) {
                 timeUnit = 'day';
                 displayFormat = { day: 'dd MMM yyyy' };
